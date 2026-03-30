@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // List items (packing + shopping checklists)
+    match /lists/{listId}/items/{itemId} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

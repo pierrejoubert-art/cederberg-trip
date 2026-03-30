@@ -1,0 +1,12 @@
+# SSL certs (local dev only)
+cert.pem
+key.pem
+
+# Local dev server
+serve.py
+
+# macOS
+.DS_Store
+
+# Old backup
+index-old.html

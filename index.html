@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cederberg Easter 2026</title>
+<style>
+  :root {
+    --bg: #faf9f6;
+    --card: #ffffff;
+    --accent: #2d6a4f;
+    --accent-light: #74c69d;
+    --text: #1b1b1b;
+    --muted: #6c757d;
+    --border: #dee2e6;
+    --danger: #dc3545;
+    --warning: #f59e0b;
+    --blue: #0077b6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding-bottom: 80px;
+  }
+  header {
+    background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+    color: white;
+    padding: 2rem 1rem;
+    text-align: center;
+  }
+  header h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+  header p { opacity: 0.85; font-size: 0.95rem; }
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav a {
+    flex-shrink: 0;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  nav a.active, nav a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .container { max-width: 800px; margin: 0 auto; padding: 1rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .card h2 {
+    font-size: 1.15rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .card h3 {
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem;
+    color: var(--text);
+  }
+  .day-card { border-left: 4px solid var(--accent); }
+  .day-card.travel { border-left-color: var(--blue); }
+  .day-card.rest { border-left-color: var(--warning); }
+  .day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .day-header h2 { margin-bottom: 0; }
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #e9ecef;
+    color: var(--muted);
+  }
+  .badge.km { background: #d4edda; color: #155724; }
+  .badge.elev { background: #fff3cd; color: #856404; }
+  .meal-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.25rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  .meal-label {
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: #f1f3f5;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--muted);
+  }
+  .checklist { list-style: none; }
+  .checklist li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f3f5;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist input[type="checkbox"] {
+    margin-top: 0.2rem;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .checklist li.checked > span.item-text { text-decoration: line-through; color: var(--muted); }
+  .checklist .sub-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.1rem;
+  }
+  .category-header {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    padding: 0.75rem 0 0.25rem;
+    border-bottom: 2px solid var(--accent-light);
+    margin-top: 0.5rem;
+  }
+  .progress-bar {
+    background: #e9ecef;
+    border-radius: 99px;
+    height: 8px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+  }
+  .progress-bar .fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.3s;
+  }
+  .progress-text {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+  .alert {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  .alert.warning { background: #fff3cd; color: #856404; }
+  .alert.info { background: #d1ecf1; color: #0c5460; }
+  .alert.danger { background: #f8d7da; color: #721c24; }
+  .link { color: var(--blue); text-decoration: none; }
+  .link:hover { text-decoration: underline; }
+  .cost-total {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-align: right;
+    padding-top: 0.5rem;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+  .alltrails-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: #2d6a4f;
+    color: white;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    text-decoration: none;
+    margin-top: 0.5rem;
+  }
+  .alltrails-link:hover { background: #1b4332; }
+  .tip {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+  }
+  .tip-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+  /* ===== Password Overlay ===== */
+  .password-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .password-overlay.hidden { display: none; }
+  .password-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .password-card h2 { color: var(--accent); margin-bottom: 0.25rem; justify-content: center; }
+  .password-card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem; }
+  .password-card input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .password-card input:focus { border-color: var(--accent); }
+  .password-card .error { color: var(--danger); font-size: 0.85rem; margin-top: 0.5rem; min-height: 1.2em; }
+  .password-card button {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .password-card button:hover { background: #1b4332; }
+
+  /* ===== Setup Message ===== */
+  .setup-message {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .setup-message.hidden { display: none; }
+  .setup-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  }
+  .setup-card h2 { color: var(--accent); margin-bottom: 1rem; }
+  .setup-card ol { padding-left: 1.5rem; font-size: 0.9rem; line-height: 1.8; }
+  .setup-card code {
+    background: #f1f3f5;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+
+  /* ===== CRUD Item Actions ===== */
+  .item-text { flex: 1; min-width: 0; }
+  .item-actions {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+    margin-left: auto;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+  }
+  .checklist li:hover .item-actions { opacity: 1; }
+  .btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0.2rem 0.35rem;
+    border-radius: 4px;
+    line-height: 1;
+    transition: background 0.15s;
+  }
+  .btn-icon:hover { background: #f1f3f5; }
+  .btn-icon.delete:hover { background: #f8d7da; }
+
+  /* ===== Add / Edit forms ===== */
+  .add-item-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: none;
+    border: 2px dashed var(--border);
+    color: var(--muted);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.5rem;
+    transition: all 0.2s;
+  }
+  .add-item-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: #f0fdf4;
+  }
+  .inline-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.5rem 0;
+    width: 100%;
+  }
+  .inline-form input[type="text"] {
+    width: 100%;
+    padding: 0.5rem 0.7rem;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+    font-family: inherit;
+  }
+  .inline-form input[type="text"]:focus { border-color: var(--accent); }
+  .inline-form .form-actions {
+    display: flex;
+    gap: 0.4rem;
+    justify-content: flex-end;
+  }
+  .btn-sm {
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s;
+  }
+  .btn-sm.primary { background: var(--accent); color: white; }
+  .btn-sm.primary:hover { background: #1b4332; }
+  .btn-sm.secondary { background: #e9ecef; color: var(--text); }
+  .btn-sm.secondary:hover { background: #dee2e6; }
+
+  /* ===== Toast ===== */
+  .toast-container {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    pointer-events: none;
+  }
+  .toast {
+    background: #1b1b1b;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+    pointer-events: auto;
+  }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
+
+  /* ===== Loading spinner ===== */
+  .loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+  }
+  .loading::after {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== Offline banner ===== */
+  .offline-banner {
+    background: var(--warning);
+    color: #1b1b1b;
+    text-align: center;
+    padding: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: none;
+  }
+  .offline-banner.show { display: block; }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.4rem; }
+    .card { padding: 1rem; }
+    nav a { padding: 0.65rem 0.75rem; font-size: 0.8rem; }
+    .item-actions { opacity: 0.7; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Setup Message (shown if Firebase not configured) ===== -->
+<div class="setup-message hidden" id="setup-message">
+  <div class="setup-card">
+    <h2>🔧 Setup Required</h2>
+    <p>To get this trip planner online, you need a (free) Firebase project:</p>
+    <ol>
+      <li>Go to <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a></li>
+      <li>Create a new project (disable Google Analytics — not needed)</li>
+      <li>Go to <strong>Build → Authentication → Sign-in method</strong> and enable <strong>Anonymous</strong></li>
+      <li>Go to <strong>Build → Firestore Database</strong> and create a database (start in <strong>test mode</strong>)</li>
+      <li>Go to <strong>Project Settings → Your apps → Add Web app</strong></li>
+      <li>Copy the <code>firebaseConfig</code> object</li>
+      <li>Paste the values into the <code>FIREBASE_CONFIG</code> object in <code>index.html</code></li>
+    </ol>
+    <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--muted);">
+      See <strong>README.md</strong> for the full guide including Firestore security rules and GitHub Pages deployment.
+    </p>
+  </div>
+</div>
+
+<!-- ===== Password Overlay ===== -->
+<div class="password-overlay hidden" id="password-overlay">
+  <div class="password-card">
+    <h2>🏔️ Cederberg 2026</h2>
+    <p>Enter the trip password to continue</p>
+    <form id="password-form">
+      <input type="password" id="password-input" placeholder="Password" autocomplete="off" autofocus>
+      <p class="error" id="password-error">&nbsp;</p>
+      <button type="submit">Enter</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===== Offline banner ===== -->
+<div class="offline-banner" id="offline-banner">📴 Offline — changes will sync when you're back online</div>
+
+<header>
+  <h1>🏔️ Cederberg Easter 2026</h1>
+  <p>4-Day Unsupported Hike · 2–7 April · 2 Hikers</p>
+</header>
+
+<nav id="nav">
+  <a href="#" data-tab="overview" class="active">Overview</a>
+  <a href="#" data-tab="itinerary">Itinerary</a>
+  <a href="#" data-tab="meals">Meals</a>
+  <a href="#" data-tab="packing">Packing</a>
+  <a href="#" data-tab="shopping">Shopping</a>
+  <a href="#" data-tab="tips">Tips</a>
+</nav>
+
+<div class="container">
+
+  <!-- ===================== OVERVIEW ===================== -->
+  <div class="section active" id="overview">
+    <div class="alert danger">
+      <strong>✅ Flights booked · ✅ Permits sorted · ✅ Hungry Hiker received</strong> — focus on groceries &amp; packing!
+    </div>
+
+    <div class="card">
+      <h2>📋 Trip Summary</h2>
+      <table>
+        <tr><td><strong>Dates</strong></td><td>Thu 2 Apr – Tue 7 Apr 2026</td></tr>
+        <tr><td><strong>On trail</strong></td><td>Fri 3 – Mon 6 Apr (4 days)</td></tr>
+        <tr><td><strong>Hikers</strong></td><td>2</td></tr>
+        <tr><td><strong>Style</strong></td><td>Unsupported, wild camping + huts</td></tr>
+        <tr><td><strong>Total distance</strong></td><td>~40–50 km</td></tr>
+        <tr><td><strong>Transport</strong></td><td>Uber to/from Kommetjie, carpool with crew to Cederberg</td></tr>
+        <tr><td><strong>Permit</strong></td><td><a class="link" href="https://www.capenature.co.za" target="_blank">CapeNature ↗</a> (~R80–120 p/p/night)</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>🗓️ Schedule at a Glance</h2>
+      <table>
+        <thead><tr><th>Day</th><th>Date</th><th>Plan</th></tr></thead>
+        <tbody>
+          <tr><td>Thu</td><td>2 Apr</td><td>FlySafair JNB 08:40→CPT 11:00, Uber to Kommetjie, shop &amp; pack, sleep</td></tr>
+          <tr><td>Fri</td><td>3 Apr</td><td>Early drive to Cederberg (~3.5 hrs) → <strong>Day 1:</strong> Groenvlei → Boontjieskloof Hut (10.4 km)</td></tr>
+          <tr><td>Sat</td><td>4 Apr</td><td><strong>Day 2:</strong> Boontjieskloof → Anvil Camp</td></tr>
+          <tr><td>Sun</td><td>5 Apr</td><td><strong>Day 3:</strong> Day trip to Crystal Pools (day pack)</td></tr>
+          <tr><td>Mon</td><td>6 Apr</td><td><strong>Day 4:</strong> Anvil Camp → Grasvlei, drive back to Kommetjie</td></tr>
+          <tr><td>Tue</td><td>7 Apr</td><td>Uber to CPT airport, FlySafair CPT 15:10→JNB 17:15</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>🌡️ Weather Forecast (Cederberg valley)</h2>
+      <p style="font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;">Source: Open-Meteo · Updated 28 Mar 2026 · Valley floor (~160 m). On trail (800–1 000 m) expect temps <strong>5–6 °C cooler</strong> &amp; stronger wind.</p>
+      <table style="font-size:0.9rem;">
+        <thead><tr><th>Day</th><th>High</th><th>Low</th><th>Rain</th><th>Wind</th><th>Sky</th></tr></thead>
+        <tbody>
+          <tr><td>Thu 2 Apr</td><td>37 °C</td><td>23 °C</td><td>10.8 mm</td><td>26 km/h</td><td>⛈️ Thunderstorm</td></tr>
+          <tr><td>Fri 3 Apr</td><td>28 °C</td><td>10 °C</td><td>0 mm</td><td>12 km/h</td><td>☁️ Overcast</td></tr>
+          <tr><td>Sat 4 Apr</td><td>28 °C</td><td>16 °C</td><td>0 mm</td><td>17 km/h</td><td>☀️ Clear</td></tr>
+          <tr><td>Sun 5 Apr</td><td>31 °C</td><td>17 °C</td><td>0 mm</td><td>17 km/h</td><td>☀️ Clear</td></tr>
+          <tr><td>Mon 6 Apr</td><td>34 °C</td><td>18 °C</td><td>0 mm</td><td>11 km/h</td><td>☀️ Clear</td></tr>
+          <tr><td>Tue 7 Apr</td><td>34 °C</td><td>21 °C</td><td>0 mm</td><td>9 km/h</td><td>☀️ Clear</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:0.5rem; font-size:0.85rem; padding:0.5rem; background:var(--card-bg); border-left:3px solid #f59e0b; border-radius:4px;">
+        ⚠️ <strong>Thu thunderstorm</strong> clears overnight — all 4 hiking days look dry with clear skies. Expect warm days (22–28 °C on trail) and cool nights (5–12 °C). Pack sun protection &amp; carry plenty of water.
+      </div>
+      <p style="font-size:0.8rem; color:var(--muted); margin-top:0.4rem;">🌅 Sunrise ~06:45 · 🌇 Sunset ~18:15 · ~11.5 hrs daylight</p>
+    </div>
+  </div>
+
+  <!-- ===================== ITINERARY ===================== -->
+  <div class="section" id="itinerary">
+    <div class="card day-card travel">
+      <div class="day-header">
+        <h2>✈️ Thu 2 Apr — Travel Day</h2>
+      </div>
+      <ul style="padding-left:1.2rem; font-size:0.9rem;">
+        <li><strong>FlySafair</strong> · JNB 08:40 → CPT 11:00</li>
+        <li>Uber from CPT airport → Kommetjie</li>
+        <li>Stop at <strong>Woolworths / Pick n Pay / Checkers</strong> for groceries (en route or near Kommetjie)</li>
+        <li>Stop at <strong>Cape Union Mart / Outdoor Warehouse</strong> for gas canister</li>
+        <li>Pack at Kommetjie, load up</li>
+        <li>Dinner in Kommetjie — sleep early, big day tomorrow</li>
+      </ul>
+    </div>
+
+    <div class="card day-card">
+      <div class="day-header">
+        <h2>🥾 Day 1 — Fri 3 Apr</h2>
+        <div class="tags">
+          <span class="badge km">10.4 km</span>
+          <span class="badge elev">+592 m</span>
+        </div>
+      </div>
+      <p><strong>Early drive to Cederberg (~3.5 hrs) → Groenvlei → Boontjieskloof Hut</strong></p>
+      <p style="font-size:0.9rem; color:var(--muted); margin-top:0.3rem;">
+        Early carpool with crew from Kommetjie. Arrive at Groenvlei trailhead late morning.
+        Steady climb into the mountains. Allow 4–5 hours hiking.
+        Biggest elevation gain day — pace yourselves.
+      </p>
+      <a class="alltrails-link" href="https://www.alltrails.com/explore/map/day-1-groenvlei-to-boontjieskloof-hut-f3e89c5?p=-1&sh=tuh9gn" target="_blank">📍 View on AllTrails</a>
+    </div>
+
+    <div class="card day-card">
+      <div class="day-header">
+        <h2>🥾 Day 2 — Sat 4 Apr</h2>
+        <div class="tags">
+          <span class="badge km">~8–12 km</span>
+          <span class="badge elev">~400–600 m</span>
+        </div>
+      </div>
+      <p><strong>Boontjieskloof Hut → Anvil Camp</strong></p>
+      <p style="font-size:0.9rem; color:var(--muted); margin-top:0.3rem;">
+        Traverse higher terrain with exposed ridgeline sections. Great views.
+        Navigation can be tricky on the plateau — keep map/GPS handy.
+        Top up water at every flowing source.
+      </p>
+      <a class="alltrails-link" href="https://www.alltrails.com/explore/map/day-2-boontjieskloof-hut-to-anvil-camp-e6e79e0?p=-1&sh=tuh9gn" target="_blank">📍 View on AllTrails</a>
+    </div>
+
+    <div class="card day-card rest">
+      <div class="day-header">
+        <h2>🏊 Day 3 — Sun 5 Apr (Easter)</h2>
+        <div class="tags">
+          <span class="badge km">~8–14 km return</span>
+          <span class="badge">Day Pack</span>
+        </div>
+      </div>
+      <p><strong>Day trip to Crystal Pools (from Anvil Camp)</strong></p>
+      <p style="font-size:0.9rem; color:var(--muted); margin-top:0.3rem;">
+        Leave tent + heavy gear at Anvil Camp. Take day pack with water, snacks, lunch,
+        swimwear, and towel. Crystal Pools are deep rock pools — stunning for swimming.
+        The lightest day!
+      </p>
+      <a class="alltrails-link" href="https://www.alltrails.com/explore/map/day-3-daytrip-to-crystal-pools-b0f906d?p=-1&sh=tuh9gn" target="_blank">📍 View on AllTrails</a>
+    </div>
+
+    <div class="card day-card">
+      <div class="day-header">
+        <h2>🥾 Day 4 — Mon 6 Apr</h2>
+        <div class="tags">
+          <span class="badge km">~10–14 km</span>
+          <span class="badge elev">Mostly descent</span>
+        </div>
+      </div>
+      <p><strong>Anvil Camp → Grasvlei</strong></p>
+      <p style="font-size:0.9rem; color:var(--muted); margin-top:0.3rem;">
+        Final day — descending back toward the valleys. Poles save your knees here.
+        After hike: carpool back to Kommetjie (~3.5 hrs). Late arrival — eat on the road or in Kommetjie.
+      </p>
+      <a class="alltrails-link" href="https://www.alltrails.com/explore/map/day-4-anvil-camp-to-grasvlei-0fc83e9?p=-1&sh=tuh9gn" target="_blank">📍 View on AllTrails</a>
+    </div>
+
+    <div class="card day-card travel">
+      <div class="day-header">
+        <h2>✈️ Tue 7 Apr — Fly Home</h2>
+      </div>
+      <p style="font-size:0.9rem;">Morning in Kommetjie. Uber to CPT airport by ~13:00.<br><strong>FlySafair</strong> · CPT 15:10 → JNB 17:15</p>
+    </div>
+  </div>
+
+  <!-- ===================== MEALS ===================== -->
+  <div class="section" id="meals">
+    <div class="alert info">
+      <strong>Hungry Hiker meals:</strong> R159 each · ~140g · 450–650 cals · soak 15min + cook 15min ·
+      <a class="link" href="https://hungryhiker.co.za/shop" target="_blank">Order here ↗</a>
+    </div>
+
+    <div class="card day-card travel">
+      <h2>Thu 2 Apr — Travel Day</h2>
+      <p style="font-size:0.9rem; color:var(--muted);">No trail food needed — eat at airport, in Kommetjie. Sleep in Kommetjie, early start Friday.</p>
+    </div>
+
+    <div class="card day-card">
+      <h2>Day 1 — Fri 3 Apr</h2>
+      <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem;">Early drive to Cederberg → Groenvlei → Boontjieskloof Hut · 10.4 km · +592m</p>
+      <div class="meal-grid">
+        <span class="meal-label">Breakfast</span><span>Early breakfast in Kommetjie before driving</span>
+        <span class="meal-label">Snacks</span><span>Mango Trail Mix + energy bar + biltong (eat in car / on trail)</span>
+        <span class="meal-label">Lunch</span><span>Tortilla wrap + peanut butter + droëwors</span>
+        <span class="meal-label">Dinner</span><span>Cup-a-Soup starter → 🟠 <strong>Hungry Hiker: Beef Mexican Taco Bowl</strong></span>
+      </div>
+    </div>
+
+    <div class="card day-card">
+      <h2>Day 2 — Sat 4 Apr</h2>
+      <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem;">Boontjieskloof → Anvil Camp</p>
+      <div class="meal-grid">
+        <span class="meal-label">Breakfast</span><span>Instant oats + powdered milk + coffee</span>
+        <span class="meal-label">Snacks</span><span>Italian Balsamic Trail Mix + energy bar + jelly babies</span>
+        <span class="meal-label">Lunch</span><span>Provitas + Laughing Cow cheese + biltong + droëwors</span>
+        <span class="meal-label">Dinner</span><span>🟠 <strong>Hungry Hiker: Chicken Thai Green Curry</strong> + hot chocolate</span>
+      </div>
+    </div>
+
+    <div class="card day-card rest">
+      <h2>Day 3 — Sun 5 Apr (Day Trip)</h2>
+      <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem;">Crystal Pools day trip from Anvil Camp</p>
+      <div class="meal-grid">
+        <span class="meal-label">Breakfast</span><span>Hungry Hiker Nutty Granola + powdered milk + coffee</span>
+        <span class="meal-label">Snacks</span><span>Sweet Chilli Trail Mix + energy bar + dried fruit</span>
+        <span class="meal-label">Lunch</span><span>Tortilla wrap + peanut butter + biltong</span>
+        <span class="meal-label">Dinner</span><span>Cup-a-Soup starter → 🟠 <strong>Hungry Hiker: Spaghetti Bolognese</strong></span>
+      </div>
+    </div>
+
+    <div class="card day-card">
+      <h2>Day 4 — Mon 6 Apr</h2>
+      <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem;">Anvil Camp → Grasvlei</p>
+      <div class="meal-grid">
+        <span class="meal-label">Breakfast</span><span>Hungry Hiker Nutty Granola (last serving) + coffee</span>
+        <span class="meal-label">Snacks</span><span>Salt &amp; Vinegar Trail Mix + energy bar + remaining sweets</span>
+        <span class="meal-label">Lunch</span><span>Remaining provitas + peanut butter + whatever's left</span>
+        <span class="meal-label">Dinner</span><span>🍔 <strong>Eat on the road or in Kommetjie!</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PACKING (dynamic) ===================== -->
+  <div class="section" id="packing">
+    <div class="card">
+      <h2>📊 Packing Progress</h2>
+      <div class="progress-bar"><div class="fill" id="pack-progress" style="width:0%"></div></div>
+      <p class="progress-text" id="pack-progress-text">Loading...</p>
+    </div>
+    <div id="packing-lists"><p class="loading">Loading packing list</p></div>
+  </div>
+
+  <!-- ===================== SHOPPING (dynamic) ===================== -->
+  <div class="section" id="shopping">
+    <div class="card">
+      <h2>📊 Shopping Progress</h2>
+      <div class="progress-bar"><div class="fill" id="shop-progress" style="width:0%"></div></div>
+      <p class="progress-text" id="shop-progress-text">Loading...</p>
+    </div>
+    <div id="shopping-lists"><p class="loading">Loading shopping list</p></div>
+  </div>
+
+  <!-- ===================== TIPS ===================== -->
+  <div class="section" id="tips">
+    <div class="card">
+      <h2>💧 Water</h2>
+      <div class="tip"><span class="tip-icon">⚠️</span><span><strong>#1 concern in late summer/early autumn.</strong> Streams may be low or dry after summer. Confirm conditions with CapeNature when collecting your permit. Fill up at every flowing source. Carry 3–4L capacity minimum.</span></div>
+    </div>
+    <div class="card">
+      <h2>🔥 Fire</h2>
+      <div class="tip"><span class="tip-icon">🚫</span><span><strong>Open fires are prohibited</strong> in the wilderness area year-round. Stove only. No exceptions.</span></div>
+    </div>
+    <div class="card">
+      <h2>🐒 Baboons</h2>
+      <div class="tip"><span class="tip-icon">🐵</span><span>Can be bold. Never leave food unattended. Hang or secure food bags at night and when leaving camp (Day 3 day trip).</span></div>
+    </div>
+    <div class="card">
+      <h2>🐍 Snakes</h2>
+      <div class="tip"><span class="tip-icon">👀</span><span>Cape cobra and puff adder are present. Watch where you step and place your hands, especially on rocky terrain.</span></div>
+    </div>
+    <div class="card">
+      <h2>🧭 Navigation</h2>
+      <div class="tip"><span class="tip-icon">🗺️</span><span>Trails are loosely marked with cairns and paint blazes. The plateau can be confusing in mist. Carry your topo map AND phone with offline AllTrails routes. <strong>Cell signal is virtually nonexistent.</strong></span></div>
+    </div>
+    <div class="card">
+      <h2>🎨 Rock Art</h2>
+      <div class="tip"><span class="tip-icon">🖐️</span><span>Ancient San rock art sites are found throughout the Cederberg. <strong>Look but don't touch</strong> — oils from skin damage the paintings. Don't use flash photography.</span></div>
+    </div>
+    <div class="card">
+      <h2>🚗 Car Logistics</h2>
+      <div class="tip"><span class="tip-icon">🔑</span><span>You're carpooling with the crew from Kommetjie. If Groenvlei and Grasvlei are different trailheads, you may need a shuttle between them — check with the farm (Sanddrif/Dwarsrivier). Monday night is a ~3.5 hr drive back to Kommetjie, so finish hiking with enough daylight.</span></div>
+    </div>
+    <div class="card">
+      <h2>⛽ Gas Canister</h2>
+      <div class="tip"><span class="tip-icon">✈️</span><span><strong>Cannot be carried on flights.</strong> Buy your gas canister in Cape Town before driving up. Cape Union Mart and Outdoor Warehouse stock them.</span></div>
+    </div>
+    <div class="card">
+      <h2>📦 Weight</h2>
+      <div class="tip"><span class="tip-icon">⚖️</span><span>Expect ~18–20 kg per person with full water. Share tent weight. Day 3 will feel glorious with just a day pack!</span></div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ===== Firebase SDK (compat) ===== -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+<script>
+// ============================================================
+//  CONFIGURATION — Fill in your Firebase project details
+// ============================================================
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyBLYetNSnNg8eXeT0v1k404CZqblZngoN8",
+  authDomain:        "ederberg-april.firebaseapp.com",
+  projectId:         "ederberg-april",
+  storageBucket:     "ederberg-april.firebasestorage.app",
+  messagingSenderId: "879421116813",
+  appId:             "1:879421116813:web:7830982bb197478ec1edc4"
+};
+
+// SHA-256 hash of the trip password.
+// Default is "cederberg2026". To change, run in browser console:
+//   hashPassword("your-new-password").then(console.log)
+// and paste the result here.
+const PASSWORD_HASH = "1a061a59dc9546359548a552c737e6ad6c92853aaea49075cd381d888917c998";
+
+// ============================================================
+//  CATEGORY DEFINITIONS
+// ============================================================
+const PACKING_CATEGORIES = [
+  { id: 'backpack',   name: 'Backpack & Shelter',      icon: '🎒' },
+  { id: 'clothing',   name: 'Clothing',                icon: '👕' },
+  { id: 'cooking',    name: 'Cooking',                 icon: '🍳' },
+  { id: 'water',      name: 'Water',                   icon: '💧' },
+  { id: 'navigation', name: 'Navigation & Electronics', icon: '🧭' },
+  { id: 'safety',     name: 'Safety & First Aid',      icon: '🩹' },
+  { id: 'hygiene',    name: 'Hygiene',                 icon: '🧴' },
+  { id: 'extras',     name: 'Extras',                  icon: '🎒' },
+];
+
+const SHOPPING_CATEGORIES = [
+  { id: 'hungry-hiker', name: 'Hungry Hiker — Received ✅', icon: '🟠' },
+  { id: 'groceries',    name: 'Groceries — Woolworths / Pick n Pay / Checkers (2 Apr)', icon: '🛒' },
+  { id: 'gear',         name: 'Gear — Cape Union Mart / Outdoor Warehouse (2 Apr)', icon: '⛺' },
+  { id: 'bookings',     name: 'Bookings & Admin', icon: '📑' },
+];
+
+// ============================================================
+//  SEED DATA (original items from the static page)
+// ============================================================
+const PACKING_SEED = [
+  // Backpack & Shelter
+  { category: 'backpack', text: '55–65L backpack with rain cover', subLabel: '' },
+  { category: 'backpack', text: '3-season tent (1 between 2)', subLabel: 'Share the weight — one carries tent, other carries poles+fly' },
+  { category: 'backpack', text: 'Groundsheet / footprint', subLabel: '' },
+  { category: 'backpack', text: 'Sleeping bag (comfort 0°C or below)', subLabel: 'April nights at altitude = cold' },
+  { category: 'backpack', text: 'Sleeping pad (inflatable or foam)', subLabel: '' },
+  // Clothing
+  { category: 'clothing', text: 'Moisture-wicking base layer tops ×2', subLabel: '' },
+  { category: 'clothing', text: 'Long-sleeve hiking shirt (sun protection)', subLabel: '' },
+  { category: 'clothing', text: 'Hiking shorts', subLabel: '' },
+  { category: 'clothing', text: 'Lightweight hiking trousers', subLabel: '' },
+  { category: 'clothing', text: 'Fleece mid-layer', subLabel: '' },
+  { category: 'clothing', text: 'Rain jacket', subLabel: 'Non-negotiable — April = start of wet season' },
+  { category: 'clothing', text: 'Rain pants (optional but recommended)', subLabel: '' },
+  { category: 'clothing', text: 'Warm beanie', subLabel: '' },
+  { category: 'clothing', text: 'Buff / neck gaiter', subLabel: '' },
+  { category: 'clothing', text: 'Sun hat', subLabel: '' },
+  { category: 'clothing', text: 'Hiking socks ×3 (merino)', subLabel: '' },
+  { category: 'clothing', text: 'Underwear ×3', subLabel: '' },
+  { category: 'clothing', text: 'Swimwear / quick-dry shorts', subLabel: 'For Crystal Pools on Day 3' },
+  { category: 'clothing', text: 'Camp shoes / sandals', subLabel: '' },
+  { category: 'clothing', text: 'Hiking boots (broken in!)', subLabel: '' },
+  { category: 'clothing', text: 'Lightweight gloves', subLabel: '' },
+  { category: 'clothing', text: 'Sleep thermals — top + bottom', subLabel: '' },
+  { category: 'clothing', text: 'Poncho', subLabel: 'Quick rain cover for you + pack' },
+  // Cooking
+  { category: 'cooking', text: 'Lightweight stove (Jetboil / pocket rocket)', subLabel: 'No open fires in the Cederberg — ever' },
+  { category: 'cooking', text: '230g gas canister', subLabel: 'Buy in CPT — can\'t fly with it from JNB' },
+  { category: 'cooking', text: 'Pot (~1L)', subLabel: '' },
+  { category: 'cooking', text: 'Spork + mug (×2)', subLabel: '' },
+  { category: 'cooking', text: '2× lighters', subLabel: '' },
+  { category: 'cooking', text: 'Coffee + tea', subLabel: 'Sticks / bags — take from home' },
+  { category: 'cooking', text: 'Powdered milk', subLabel: '' },
+  { category: 'cooking', text: 'Whey powder', subLabel: 'Recovery shakes on trail' },
+  { category: 'cooking', text: 'Smoothie shaker bottle', subLabel: '' },
+  // Water
+  { category: 'water', text: 'Water bottles / bladder — min 4L carry capacity each', subLabel: 'Late summer = unreliable water. Fill up at every source.' },
+  { category: 'water', text: 'Water purification (Sawyer filter or tablets)', subLabel: '' },
+  // Navigation & Electronics
+  { category: 'navigation', text: '1:50,000 Cederberg topo map', subLabel: '' },
+  { category: 'navigation', text: 'Compass', subLabel: '' },
+  { category: 'navigation', text: 'Phone with AllTrails routes downloaded offline', subLabel: '' },
+  { category: 'navigation', text: 'Power bank (10,000 mAh+)', subLabel: '' },
+  { category: 'navigation', text: 'Charging cable', subLabel: '' },
+  { category: 'navigation', text: 'Headlamp + spare batteries', subLabel: '' },
+  // Safety & First Aid
+  { category: 'safety', text: 'Blister plasters (Compeed)', subLabel: '' },
+  { category: 'safety', text: 'Crepe bandage', subLabel: '' },
+  { category: 'safety', text: 'Antiseptic wipes', subLabel: '' },
+  { category: 'safety', text: 'Painkillers (ibuprofen + paracetamol)', subLabel: '' },
+  { category: 'safety', text: 'Antihistamines', subLabel: '' },
+  { category: 'safety', text: 'Tweezers', subLabel: '' },
+  { category: 'safety', text: 'Emergency / rescue blanket', subLabel: '' },
+  { category: 'safety', text: 'Whistle', subLabel: '' },
+  { category: 'safety', text: 'Knife / multitool', subLabel: '' },
+  { category: 'safety', text: 'Sunscreen SPF50+', subLabel: '' },
+  { category: 'safety', text: 'Lip balm with SPF', subLabel: '' },
+  { category: 'safety', text: 'Insect repellent', subLabel: 'Tick country' },
+  { category: 'safety', text: 'Anti-chafe cream', subLabel: 'Thighs, feet, pack straps' },
+  // Hygiene
+  { category: 'hygiene', text: 'Biodegradable soap (small)', subLabel: '' },
+  { category: 'hygiene', text: 'Trowel (cat holes — no facilities)', subLabel: '' },
+  { category: 'hygiene', text: 'Toilet paper + ziplock (pack out used TP)', subLabel: '' },
+  { category: 'hygiene', text: 'Wet wipes', subLabel: '' },
+  { category: 'hygiene', text: 'Plastic bag for rubbish', subLabel: 'Pack it in, pack it out' },
+  { category: 'hygiene', text: 'Hand sanitiser', subLabel: '' },
+  { category: 'hygiene', text: 'Toothbrush + toothpaste', subLabel: '' },
+  { category: 'hygiene', text: 'Hair brush / comb', subLabel: '' },
+  { category: 'hygiene', text: 'Microfibre towel', subLabel: 'Doubles as Crystal Pools towel' },
+  // Extras
+  { category: 'extras', text: 'Trekking poles', subLabel: 'Day 1 climb + Day 4 descent = essential' },
+  { category: 'extras', text: 'Sunglasses', subLabel: '' },
+  { category: 'extras', text: 'Dry bags / ziplock bags', subLabel: 'For electronics, sleeping bag, clothes' },
+  { category: 'extras', text: 'Binoculars', subLabel: '' },
+  { category: 'extras', text: 'Cards / book for camp evenings', subLabel: '' },
+  { category: 'extras', text: 'Day pack(s)', subLabel: 'For Crystal Pools day trip — Day 3' },
+  { category: 'extras', text: 'Ear plugs', subLabel: '' },
+];
+
+const SHOPPING_SEED = [
+  // Hungry Hiker (pre-checked)
+  { category: 'hungry-hiker', text: 'Beef Mexican Taco Bowl ×2', subLabel: 'Day 1 (Fri) dinner', checked: true },
+  { category: 'hungry-hiker', text: 'Chicken Thai Green Curry ×2', subLabel: 'Day 2 (Sat) dinner', checked: true },
+  { category: 'hungry-hiker', text: 'Spaghetti Bolognese ×2', subLabel: 'Day 3 (Sun) dinner', checked: true },
+  { category: 'hungry-hiker', text: 'Nutty Granola 3-serving (150g) ×2', subLabel: 'Day 3 & 4 breakfast', checked: true },
+  { category: 'hungry-hiker', text: 'Mango Trail Mix (45g) ×2', subLabel: '', checked: true },
+  { category: 'hungry-hiker', text: 'Italian Balsamic Trail Mix (45g) ×2', subLabel: '', checked: true },
+  { category: 'hungry-hiker', text: 'Sweet Chilli Trail Mix (45g) ×2', subLabel: '', checked: true },
+  { category: 'hungry-hiker', text: 'Salt & Vinegar Trail Mix (45g) ×2', subLabel: '', checked: true },
+  // Groceries
+  { category: 'groceries', text: 'Instant oats sachets ×8', subLabel: 'Breakfasts Day 1 & 2' },
+  { category: 'groceries', text: 'Powdered milk sachets ×16', subLabel: 'Oats + coffee/tea' },
+  { category: 'groceries', text: 'Instant coffee sticks / tea bags ×16', subLabel: '' },
+  { category: 'groceries', text: 'Sugar sachets ×16', subLabel: '' },
+  { category: 'groceries', text: 'Biltong snap sticks ×8', subLabel: '' },
+  { category: 'groceries', text: 'Droëwors (2 packs)', subLabel: '' },
+  { category: 'groceries', text: 'Provitas / crackers (1 large box)', subLabel: '' },
+  { category: 'groceries', text: 'Laughing Cow cheese wedges (1 round)', subLabel: 'Eat by Day 2' },
+  { category: 'groceries', text: 'Peanut butter (small tub or sachets)', subLabel: '' },
+  { category: 'groceries', text: 'Tortilla wraps ×8 (1 pack)', subLabel: '' },
+  { category: 'groceries', text: 'Cup-a-Soup ×4', subLabel: '' },
+  { category: 'groceries', text: 'Hot chocolate sachets ×4', subLabel: '' },
+  { category: 'groceries', text: 'Jelly babies / wine gums (1 big bag)', subLabel: '' },
+  { category: 'groceries', text: 'Energy bars ×8 (Jungle Oat etc.)', subLabel: '' },
+  { category: 'groceries', text: 'Dried fruit — mango & apricots (1 bag each)', subLabel: '' },
+  { category: 'groceries', text: 'Salt & pepper sachets', subLabel: '' },
+  // Gear
+  { category: 'gear', text: '230g gas canister', subLabel: 'Cannot fly with this — must buy in CPT' },
+  { category: 'gear', text: 'Water bladder for PJ', subLabel: '' },
+  { category: 'gear', text: 'Groundsheet', subLabel: '' },
+  { category: 'gear', text: 'Water repellent spray / treatment', subLabel: 'For jacket, boots, or pack' },
+  { category: 'gear', text: 'Poncho', subLabel: '' },
+  // Bookings & Admin
+  { category: 'bookings', text: 'CapeNature wilderness permit', subLabel: 'Sorted by Kommetjie host — legend!', checked: true },
+  { category: 'bookings', text: 'Flights booked', subLabel: 'JNB 08:40→CPT 11:00 · CPT 15:10→JNB 17:15', checked: true },
+  { category: 'bookings', text: 'Confirm with Kommetjie crew re: carpool & staying over Mon night + Tue morning', subLabel: '' },
+  { category: 'bookings', text: 'Download AllTrails routes for offline use', subLabel: '' },
+  { category: 'bookings', text: 'Check water source status with CapeNature', subLabel: '' },
+  { category: 'bookings', text: 'Arrange car shuttle if start ≠ end trailhead', subLabel: '' },
+];
+
+// ============================================================
+//  UTILITIES
+// ============================================================
+async function hashPassword(password) {
+  const data = new TextEncoder().encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function showToast(message) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+// ============================================================
+//  APP STATE
+// ============================================================
+let db = null;
+let packingItems = [];  // live array from Firestore
+let shoppingItems = [];
+
+// ============================================================
+//  FIREBASE INIT & AUTH
+// ============================================================
+function isFirebaseConfigured() {
+  return FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey !== 'YOUR_API_KEY';
+}
+
+async function initFirebase() {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.firestore();
+  // Enable offline persistence — crucial for the trail!
+  try {
+    await db.enablePersistence({ synchronizeTabs: true });
+  } catch (err) {
+    console.warn('Offline persistence unavailable:', err.code);
+  }
+  // Sign in anonymously
+  await firebase.auth().signInAnonymously();
+}
+
+// ============================================================
+//  PASSWORD GATE
+// ============================================================
+async function checkPassword() {
+  return new Promise((resolve) => {
+    // Check sessionStorage first
+    if (sessionStorage.getItem('cederberg_auth') === 'true') {
+      document.getElementById('password-overlay').classList.add('hidden');
+      resolve();
+      return;
+    }
+    const overlay = document.getElementById('password-overlay');
+    overlay.classList.remove('hidden');
+    document.getElementById('password-input').focus();
+
+    document.getElementById('password-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('password-input').value;
+      const hash = await hashPassword(input);
+      if (hash === PASSWORD_HASH) {
+        sessionStorage.setItem('cederberg_auth', 'true');
+        overlay.classList.add('hidden');
+        resolve();
+      } else {
+        document.getElementById('password-error').textContent = 'Wrong password — try again';
+        document.getElementById('password-input').value = '';
+        document.getElementById('password-input').focus();
+      }
+    });
+  });
+}
+
+// ============================================================
+//  FIRESTORE CRUD
+// ============================================================
+function getCollection(listId) {
+  return db.collection('lists').doc(listId).collection('items');
+}
+
+async function addItem(listId, category, text, subLabel = '') {
+  const items = listId === 'packing' ? packingItems : shoppingItems;
+  const catItems = items.filter(i => i.category === category);
+  const maxOrder = catItems.length > 0 ? Math.max(...catItems.map(i => i.order)) : -1;
+  await getCollection(listId).add({
+    text,
+    subLabel: subLabel || '',
+    category,
+    checked: false,
+    order: maxOrder + 1,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+
+async function updateItem(listId, itemId, updates) {
+  await getCollection(listId).doc(itemId).update(updates);
+}
+
+async function deleteItem(listId, itemId) {
+  await getCollection(listId).doc(itemId).delete();
+}
+
+async function toggleItem(listId, itemId, checked) {
+  await getCollection(listId).doc(itemId).update({ checked });
+}
+
+// ============================================================
+//  SEED DATA (runs once when Firestore is empty)
+// ============================================================
+async function seedIfEmpty(listId, seedData) {
+  const snapshot = await getCollection(listId).limit(1).get();
+  if (!snapshot.empty) return; // already seeded
+
+  const batch = db.batch();
+  seedData.forEach((item, index) => {
+    const ref = getCollection(listId).doc();
+    batch.set(ref, {
+      text: item.text,
+      subLabel: item.subLabel || '',
+      category: item.category,
+      checked: item.checked || false,
+      order: index,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  });
+  await batch.commit();
+  showToast(`${listId} list loaded with ${seedData.length} items`);
+}
+
+// ============================================================
+//  RENDERING
+// ============================================================
+function renderList(listId, categories, items, container) {
+  container.innerHTML = '';
+
+  categories.forEach(cat => {
+    const catItems = items
+      .filter(i => i.category === cat.id)
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<p class="category-header">${cat.icon} ${cat.name}</p>`;
+
+    const ul = document.createElement('ul');
+    ul.className = 'checklist';
+
+    catItems.forEach(item => {
+      const li = createItemElement(listId, item);
+      ul.appendChild(li);
+    });
+
+    card.appendChild(ul);
+
+    // Add item button
+    const addBtn = document.createElement('button');
+    addBtn.className = 'add-item-btn';
+    addBtn.innerHTML = '+ Add item';
+    addBtn.addEventListener('click', () => {
+      showAddForm(listId, cat.id, ul, addBtn);
+    });
+    card.appendChild(addBtn);
+
+    container.appendChild(card);
+  });
+
+  updateProgress(listId, items);
+}
+
+function createItemElement(listId, item) {
+  const li = document.createElement('li');
+  if (item.checked) li.classList.add('checked');
+
+  const cb = document.createElement('input');
+  cb.type = 'checkbox';
+  cb.checked = item.checked;
+  cb.addEventListener('change', () => {
+    toggleItem(listId, item.id, cb.checked);
+  });
+
+  const span = document.createElement('span');
+  span.className = 'item-text';
+  span.textContent = item.text;
+  if (item.subLabel) {
+    const sub = document.createElement('span');
+    sub.className = 'sub-label';
+    sub.textContent = item.subLabel;
+    span.appendChild(sub);
+  }
+
+  const actions = document.createElement('div');
+  actions.className = 'item-actions';
+
+  const editBtn = document.createElement('button');
+  editBtn.className = 'btn-icon';
+  editBtn.title = 'Edit';
+  editBtn.textContent = '✏️';
+  editBtn.addEventListener('click', () => {
+    showEditForm(listId, item, li);
+  });
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'btn-icon delete';
+  deleteBtn.title = 'Delete';
+  deleteBtn.textContent = '🗑️';
+  deleteBtn.addEventListener('click', () => {
+    if (confirm(`Delete "${item.text}"?`)) {
+      deleteItem(listId, item.id);
+      showToast('Item deleted');
+    }
+  });
+
+  actions.appendChild(editBtn);
+  actions.appendChild(deleteBtn);
+
+  li.appendChild(cb);
+  li.appendChild(span);
+  li.appendChild(actions);
+  return li;
+}
+
+function showAddForm(listId, category, ul, addBtn) {
+  // Don't show multiple forms
+  if (addBtn.dataset.formOpen === 'true') return;
+  addBtn.dataset.formOpen = 'true';
+
+  const li = document.createElement('li');
+  li.innerHTML = `
+    <div class="inline-form">
+      <input type="text" class="add-text" placeholder="Item name" autofocus>
+      <input type="text" class="add-sub" placeholder="Note (optional)">
+      <div class="form-actions">
+        <button class="btn-sm secondary cancel-btn">Cancel</button>
+        <button class="btn-sm primary save-btn">Add</button>
+      </div>
+    </div>
+  `;
+  ul.appendChild(li);
+  li.querySelector('.add-text').focus();
+
+  const save = async () => {
+    const text = li.querySelector('.add-text').value.trim();
+    if (!text) { li.querySelector('.add-text').focus(); return; }
+    const subLabel = li.querySelector('.add-sub').value.trim();
+    li.remove();
+    addBtn.dataset.formOpen = 'false';
+    await addItem(listId, category, text, subLabel);
+    showToast('Item added');
+  };
+
+  const cancel = () => {
+    li.remove();
+    addBtn.dataset.formOpen = 'false';
+  };
+
+  li.querySelector('.save-btn').addEventListener('click', save);
+  li.querySelector('.cancel-btn').addEventListener('click', cancel);
+  li.querySelector('.add-text').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') save();
+    if (e.key === 'Escape') cancel();
+  });
+  li.querySelector('.add-sub').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') save();
+    if (e.key === 'Escape') cancel();
+  });
+}
+
+function showEditForm(listId, item, li) {
+  const originalHTML = li.innerHTML;
+  li.innerHTML = `
+    <div class="inline-form">
+      <input type="text" class="edit-text" value="${escapeAttr(item.text)}">
+      <input type="text" class="edit-sub" value="${escapeAttr(item.subLabel || '')}" placeholder="Note (optional)">
+      <div class="form-actions">
+        <button class="btn-sm secondary cancel-btn">Cancel</button>
+        <button class="btn-sm primary save-btn">Save</button>
+      </div>
+    </div>
+  `;
+  li.querySelector('.edit-text').focus();
+  li.querySelector('.edit-text').select();
+
+  const save = async () => {
+    const text = li.querySelector('.edit-text').value.trim();
+    if (!text) { li.querySelector('.edit-text').focus(); return; }
+    const subLabel = li.querySelector('.edit-sub').value.trim();
+    await updateItem(listId, item.id, { text, subLabel });
+    showToast('Item updated');
+  };
+
+  const cancel = () => {
+    // Re-render will handle it via the snapshot listener
+    li.innerHTML = originalHTML;
+    // Re-create the proper element
+    const parent = li.parentNode;
+    const newLi = createItemElement(listId, item);
+    parent.replaceChild(newLi, li);
+  };
+
+  li.querySelector('.save-btn').addEventListener('click', save);
+  li.querySelector('.cancel-btn').addEventListener('click', cancel);
+  li.querySelector('.edit-text').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') save();
+    if (e.key === 'Escape') cancel();
+  });
+  li.querySelector('.edit-sub').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') save();
+    if (e.key === 'Escape') cancel();
+  });
+}
+
+function escapeAttr(str) {
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ============================================================
+//  PROGRESS BARS
+// ============================================================
+function updateProgress(listId, items) {
+  const total = items.length;
+  const checked = items.filter(i => i.checked).length;
+  const pct = total ? (checked / total * 100) : 0;
+
+  if (listId === 'packing') {
+    document.getElementById('pack-progress').style.width = pct + '%';
+    document.getElementById('pack-progress-text').textContent = `${checked} / ${total} items packed`;
+  } else {
+    document.getElementById('shop-progress').style.width = pct + '%';
+    document.getElementById('shop-progress-text').textContent = `${checked} / ${total} items bought`;
+  }
+}
+
+// ============================================================
+//  REAL-TIME LISTENERS
+// ============================================================
+function listenToList(listId, categories, containerId) {
+  const container = document.getElementById(containerId);
+  getCollection(listId).orderBy('order').onSnapshot((snapshot) => {
+    const items = [];
+    snapshot.forEach(doc => {
+      items.push({ id: doc.id, ...doc.data() });
+    });
+    if (listId === 'packing') packingItems = items;
+    else shoppingItems = items;
+    renderList(listId, categories, items, container);
+  }, (error) => {
+    console.error(`Error listening to ${listId}:`, error);
+    container.innerHTML = '<p style="color:var(--danger); padding:1rem;">Error loading list. Check console.</p>';
+  });
+}
+
+// ============================================================
+//  TAB NAVIGATION
+// ============================================================
+function initNav() {
+  const nav = document.getElementById('nav');
+  const sections = document.querySelectorAll('.section');
+  nav.addEventListener('click', e => {
+    if (e.target.tagName !== 'A') return;
+    e.preventDefault();
+    const tab = e.target.dataset.tab;
+    nav.querySelectorAll('a').forEach(a => a.classList.toggle('active', a.dataset.tab === tab));
+    sections.forEach(s => s.classList.toggle('active', s.id === tab));
+    window.scrollTo(0, 0);
+  });
+}
+
+// ============================================================
+//  OFFLINE DETECTION
+// ============================================================
+function initOfflineDetection() {
+  const banner = document.getElementById('offline-banner');
+  const update = () => banner.classList.toggle('show', !navigator.onLine);
+  window.addEventListener('online', update);
+  window.addEventListener('offline', update);
+  update();
+}
+
+// ============================================================
+//  MAIN
+// ============================================================
+async function main() {
+  initNav();
+  initOfflineDetection();
+
+  // Check if Firebase is configured
+  if (!isFirebaseConfigured()) {
+    document.getElementById('setup-message').classList.remove('hidden');
+    // Still allow viewing static tabs
+    return;
+  }
+
+  // Password gate
+  await checkPassword();
+
+  // Init Firebase
+  await initFirebase();
+
+  // Seed data if first run
+  await seedIfEmpty('packing', PACKING_SEED);
+  await seedIfEmpty('shopping', SHOPPING_SEED);
+
+  // Start real-time listeners
+  listenToList('packing', PACKING_CATEGORIES, 'packing-lists');
+  listenToList('shopping', SHOPPING_CATEGORIES, 'shopping-lists');
+}
+
+main().catch(err => {
+  console.error('App init error:', err);
+  showToast('Error starting app — check console');
+});
+</script>
+</body>
+</html>
