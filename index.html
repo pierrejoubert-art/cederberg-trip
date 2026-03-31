@@ -33,17 +33,7 @@
   }
   header h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
   header p { opacity: 0.85; font-size: 0.95rem; }
-  .switch-hiker-btn {
-    margin-top: 0.6rem;
-    background: rgba(255,255,255,0.18);
-    color: white;
-    border: 1px solid rgba(255,255,255,0.35);
-    padding: 0.3rem 0.9rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    cursor: pointer;
-  }
-  .switch-hiker-btn:hover { background: rgba(255,255,255,0.3); }
+
   nav {
     position: sticky;
     top: 0;
@@ -147,24 +137,8 @@
     color: var(--muted);
   }
   .checklist { list-style: none; }
-  .checklist li {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #f1f3f5;
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-    font-size: 0.9rem;
-  }
   .checklist li:last-child { border-bottom: none; }
-  .checklist input[type="checkbox"] {
-    margin-top: 0.2rem;
-    width: 18px;
-    height: 18px;
-    accent-color: var(--accent);
-    flex-shrink: 0;
-    cursor: pointer;
-  }
-  .checklist li.checked > span.item-text { text-decoration: line-through; color: var(--muted); }
+
   .checklist .sub-label {
     display: block;
     font-size: 0.8rem;
@@ -399,81 +373,52 @@
   .btn-sm.secondary { background: #e9ecef; color: var(--text); }
   .btn-sm.secondary:hover { background: #dee2e6; }
 
-  /* ===== Hiker Picker ===== */
-  .hiker-picker-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9998;
-    background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+  /* ===== Two-column hiker checkboxes ===== */
+  .checklist-legend {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-  }
-  .hiker-picker-overlay.hidden { display: none; }
-  .hiker-picker-card {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    max-width: 360px;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-  }
-  .hiker-picker-card h2 { color: var(--accent); margin-bottom: 0.5rem; justify-content: center; }
-  .hiker-picker-card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem; }
-  .hiker-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-  .hiker-buttons button {
-    padding: 0.85rem;
-    background: var(--bg);
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    font-size: 1rem;
+    gap: 1rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-  .hiker-buttons button:hover {
-    border-color: var(--accent);
-    background: #f0fdf4;
-    color: var(--accent);
-  }
-
-  /* ===== Hiker Pills ===== */
-  .hiker-pills {
-    display: flex;
-    gap: 0.4rem;
-    margin-bottom: 0.75rem;
-    flex-wrap: wrap;
-  }
-  .hiker-pill {
-    padding: 0.4rem 0.9rem;
-    border-radius: 99px;
-    border: 2px solid var(--border);
-    background: var(--card);
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
     color: var(--muted);
+    padding: 0.5rem 0;
+    margin-bottom: 0.25rem;
+    border-bottom: 1px solid var(--border);
   }
-  .hiker-pill:hover {
-    border-color: var(--accent-light);
-    color: var(--accent);
+  .checklist-legend span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
   }
-  .hiker-pill.active {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: white;
+  .hiker-checks {
+    display: flex;
+    gap: 0.15rem;
+    flex-shrink: 0;
+    align-items: flex-start;
+    margin-top: 0.15rem;
   }
+  .hiker-check {
+    position: relative;
+    width: 22px;
+    height: 22px;
+  }
+  .hiker-check input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+  .hiker-check.pj input[type="checkbox"] { accent-color: #0077b6; }
+  .hiker-check.dom input[type="checkbox"] { accent-color: #e76f51; }
+  .checklist li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f3f5;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .checklist li.both-checked > span.item-text { text-decoration: line-through; color: var(--muted); }
 
   /* ===== Toast ===== */
   .toast-container {
@@ -576,22 +521,12 @@
   </div>
 </div>
 
-<!-- ===== Hiker Picker Overlay ===== -->
-<div class="hiker-picker-overlay hidden" id="hiker-picker-overlay">
-  <div class="hiker-picker-card">
-    <h2>👋 Who's packing?</h2>
-    <p>Choose your name — you can always view other hikers' lists too</p>
-    <div class="hiker-buttons" id="hiker-buttons"></div>
-  </div>
-</div>
-
 <!-- ===== Offline banner ===== -->
 <div class="offline-banner" id="offline-banner">📴 Offline — changes will sync when you're back online</div>
 
 <header>
   <h1>🏔️ Cederberg Easter 2026</h1>
   <p>4-Day Unsupported Hike · 2–7 April</p>
-  <button id="switch-hiker-btn" class="switch-hiker-btn hidden" onclick="switchHiker()">Switch hiker</button>
 </header>
 
 <nav id="nav">
@@ -809,7 +744,6 @@
 
   <!-- ===================== PACKING (dynamic) ===================== -->
   <div class="section" id="packing">
-    <div class="hiker-pills" id="packing-hiker-pills"></div>
     <div class="card">
       <h2>📊 Packing Progress</h2>
       <div class="progress-bar"><div class="fill" id="pack-progress" style="width:0%"></div></div>
@@ -820,7 +754,6 @@
 
   <!-- ===================== SHOPPING (dynamic) ===================== -->
   <div class="section" id="shopping">
-    <div class="hiker-pills" id="shopping-hiker-pills"></div>
     <div class="card">
       <h2>📊 Shopping Progress</h2>
       <div class="progress-bar"><div class="fill" id="shop-progress" style="width:0%"></div></div>
@@ -894,12 +827,11 @@ const FIREBASE_CONFIG = {
 const PASSWORD_HASH = "3ffe186895c8b41eaa52aaece2b9f5f283e97c77198d36a6ab7c99390cd195a7";
 
 // ============================================================
-//  HIKERS
+//  HIKERS (2 checkbox columns — PJ and Dom)
 // ============================================================
 const HIKERS = [
-  { id: 'val', name: 'Val',   emoji: '💜' },
-  { id: 'dom', name: 'Dom',   emoji: '🧡' },
-  { id: 'pj',  name: 'Pierre', emoji: '💙' },
+  { id: 'pj',  name: 'PJ',  emoji: '💙', cssClass: 'pj'  },
+  { id: 'dom', name: 'Dom', emoji: '🧡', cssClass: 'dom' },
 ];
 
 // ============================================================
@@ -951,7 +883,7 @@ const PACKING_SEED = [
   { category: 'clothing', text: 'Sleep thermals — top + bottom', subLabel: '' },
   { category: 'clothing', text: 'Poncho', subLabel: 'Quick rain cover for you + pack' },
   { category: 'cooking', text: 'Lightweight stove (Jetboil / pocket rocket)', subLabel: 'No open fires in the Cederberg — ever' },
-  { category: 'cooking', text: '230g gas canister', subLabel: 'Buy in CPT — can\'t fly with it from JNB' },
+  { category: 'cooking', text: '230g gas canister', subLabel: "Buy in CPT — can't fly with it from JNB" },
   { category: 'cooking', text: 'Pot (~1L)', subLabel: '' },
   { category: 'cooking', text: 'Spork + mug', subLabel: '' },
   { category: 'cooking', text: '2× lighters', subLabel: '' },
@@ -1054,16 +986,16 @@ function showToast(message) {
   setTimeout(() => toast.remove(), 3000);
 }
 
+function escapeAttr(str) {
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 // ============================================================
 //  APP STATE
 // ============================================================
 let db = null;
-let currentHiker = null;       // { id, name, emoji }
-let viewingHiker = null;       // which hiker's list we're looking at
-let packingItems = {};         // { hikerId: [...items] }
-let shoppingItems = {};
-let packingUnsubs = [];        // Firestore unsubscribe functions
-let shoppingUnsubs = [];
+let packingItems = [];
+let shoppingItems = [];
 
 // ============================================================
 //  FIREBASE INIT & AUTH
@@ -1115,85 +1047,60 @@ async function checkPassword() {
 }
 
 // ============================================================
-//  HIKER PICKER
+//  FIRESTORE CRUD — shared list, per-hiker checked fields
+//  Each item: { text, subLabel, category, checked: { pj: bool, dom: bool }, order }
 // ============================================================
-function pickHiker() {
-  return new Promise((resolve) => {
-    // Check localStorage for remembered hiker
-    const saved = localStorage.getItem('cederberg_hiker');
-    if (saved) {
-      const hiker = HIKERS.find(h => h.id === saved);
-      if (hiker) {
-        resolve(hiker);
-        return;
-      }
-    }
-
-    const overlay = document.getElementById('hiker-picker-overlay');
-    const btnContainer = document.getElementById('hiker-buttons');
-    overlay.classList.remove('hidden');
-
-    HIKERS.forEach(hiker => {
-      const btn = document.createElement('button');
-      btn.innerHTML = `${hiker.emoji} ${hiker.name}`;
-      btn.addEventListener('click', () => {
-        localStorage.setItem('cederberg_hiker', hiker.id);
-        overlay.classList.add('hidden');
-        resolve(hiker);
-      });
-      btnContainer.appendChild(btn);
-    });
-  });
+function getCollection(listType) {
+  return db.collection('lists').doc(listType).collection('items');
 }
 
-// ============================================================
-//  FIRESTORE CRUD (per-hiker)
-// ============================================================
-function getCollection(listType, hikerId) {
-  return db.collection('hikers').doc(hikerId).collection(listType);
-}
-
-async function addItem(listType, hikerId, category, text, subLabel = '') {
-  const items = (listType === 'packing' ? packingItems : shoppingItems)[hikerId] || [];
+async function addItem(listType, category, text, subLabel = '') {
+  const items = listType === 'packing' ? packingItems : shoppingItems;
   const catItems = items.filter(i => i.category === category);
   const maxOrder = catItems.length > 0 ? Math.max(...catItems.map(i => i.order)) : -1;
-  await getCollection(listType, hikerId).add({
+  const checkedInit = {};
+  HIKERS.forEach(h => checkedInit[h.id] = false);
+  await getCollection(listType).add({
     text,
     subLabel: subLabel || '',
     category,
-    checked: false,
+    checked: checkedInit,
     order: maxOrder + 1,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 }
 
-async function updateItem(listType, hikerId, itemId, updates) {
-  await getCollection(listType, hikerId).doc(itemId).update(updates);
+async function updateItem(listType, itemId, updates) {
+  await getCollection(listType).doc(itemId).update(updates);
 }
 
-async function deleteItem(listType, hikerId, itemId) {
-  await getCollection(listType, hikerId).doc(itemId).delete();
+async function deleteItem(listType, itemId) {
+  await getCollection(listType).doc(itemId).delete();
 }
 
-async function toggleItem(listType, hikerId, itemId, checked) {
-  await getCollection(listType, hikerId).doc(itemId).update({ checked });
+async function toggleItem(listType, itemId, hikerId, checked) {
+  await getCollection(listType).doc(itemId).update({
+    [`checked.${hikerId}`]: checked
+  });
 }
 
 // ============================================================
-//  SEED DATA (per-hiker, runs once per hiker)
+//  SEED DATA (shared list, runs once per list type)
 // ============================================================
-async function seedIfEmpty(listType, hikerId, seedData) {
-  const snapshot = await getCollection(listType, hikerId).limit(1).get();
+async function seedIfEmpty(listType, seedData) {
+  const snapshot = await getCollection(listType).limit(1).get();
   if (!snapshot.empty) return;
 
   const batch = db.batch();
   seedData.forEach((item, index) => {
-    const ref = getCollection(listType, hikerId).doc();
+    const ref = getCollection(listType).doc();
+    const checkedVal = {};
+    HIKERS.forEach(h => checkedVal[h.id] = item.checked || false);
     batch.set(ref, {
       text: item.text,
       subLabel: item.subLabel || '',
       category: item.category,
-      checked: item.checked || false,
+      checked: checkedVal,
       order: index,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
@@ -1202,43 +1109,10 @@ async function seedIfEmpty(listType, hikerId, seedData) {
 }
 
 // ============================================================
-//  HIKER PILLS (tab-like selectors for viewing different hikers)
-// ============================================================
-function renderHikerPills(containerId, listType) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-  HIKERS.forEach(hiker => {
-    const pill = document.createElement('button');
-    pill.className = 'hiker-pill' + (hiker.id === viewingHiker.id ? ' active' : '');
-    pill.textContent = `${hiker.emoji} ${hiker.name}`;
-    pill.addEventListener('click', () => {
-      viewingHiker = hiker;
-      // Update all pills
-      renderHikerPills('packing-hiker-pills', 'packing');
-      renderHikerPills('shopping-hiker-pills', 'shopping');
-      // Re-render the active list
-      renderCurrentView(listType);
-    });
-    container.appendChild(pill);
-  });
-}
-
-function renderCurrentView(listType) {
-  if (listType === 'packing') {
-    const items = packingItems[viewingHiker.id] || [];
-    renderList('packing', PACKING_CATEGORIES, items, document.getElementById('packing-lists'));
-  } else {
-    const items = shoppingItems[viewingHiker.id] || [];
-    renderList('shopping', SHOPPING_CATEGORIES, items, document.getElementById('shopping-lists'));
-  }
-}
-
-// ============================================================
-//  RENDERING
+//  RENDERING — single list, 2-column checkboxes (PJ + Dom)
 // ============================================================
 function renderList(listType, categories, items, container) {
   container.innerHTML = '';
-  const isOwnList = viewingHiker.id === currentHiker.id;
 
   categories.forEach(cat => {
     const catItems = items
@@ -1249,26 +1123,34 @@ function renderList(listType, categories, items, container) {
     card.className = 'card';
     card.innerHTML = `<p class="category-header">${cat.icon} ${cat.name}</p>`;
 
+    // Legend showing which column is which hiker
+    const legend = document.createElement('div');
+    legend.className = 'checklist-legend';
+    HIKERS.forEach(h => {
+      const s = document.createElement('span');
+      s.innerHTML = `${h.emoji} ${h.name}`;
+      legend.appendChild(s);
+    });
+    card.appendChild(legend);
+
     const ul = document.createElement('ul');
     ul.className = 'checklist';
 
     catItems.forEach(item => {
-      const li = createItemElement(listType, viewingHiker.id, item, isOwnList);
+      const li = createItemElement(listType, item);
       ul.appendChild(li);
     });
 
     card.appendChild(ul);
 
-    // Only show add button on your own list
-    if (isOwnList) {
-      const addBtn = document.createElement('button');
-      addBtn.className = 'add-item-btn';
-      addBtn.innerHTML = '+ Add item';
-      addBtn.addEventListener('click', () => {
-        showAddForm(listType, viewingHiker.id, cat.id, ul, addBtn);
-      });
-      card.appendChild(addBtn);
-    }
+    // Add item button
+    const addBtn = document.createElement('button');
+    addBtn.className = 'add-item-btn';
+    addBtn.innerHTML = '+ Add item';
+    addBtn.addEventListener('click', () => {
+      showAddForm(listType, cat.id, ul, addBtn);
+    });
+    card.appendChild(addBtn);
 
     container.appendChild(card);
   });
@@ -1276,16 +1158,28 @@ function renderList(listType, categories, items, container) {
   updateProgress(listType, items);
 }
 
-function createItemElement(listType, hikerId, item, isOwnList) {
+function createItemElement(listType, item) {
   const li = document.createElement('li');
-  if (item.checked) li.classList.add('checked');
+  const checked = item.checked || {};
+  const allChecked = HIKERS.every(h => checked[h.id]);
+  if (allChecked) li.classList.add('both-checked');
 
-  const cb = document.createElement('input');
-  cb.type = 'checkbox';
-  cb.checked = item.checked;
-  if (!isOwnList) cb.disabled = true;
-  cb.addEventListener('change', () => {
-    if (isOwnList) toggleItem(listType, hikerId, item.id, cb.checked);
+  // Two checkbox columns
+  const checksDiv = document.createElement('div');
+  checksDiv.className = 'hiker-checks';
+
+  HIKERS.forEach(hiker => {
+    const wrapper = document.createElement('label');
+    wrapper.className = `hiker-check ${hiker.cssClass}`;
+    wrapper.title = hiker.name;
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = !!checked[hiker.id];
+    cb.addEventListener('change', () => {
+      toggleItem(listType, item.id, hiker.id, cb.checked);
+    });
+    wrapper.appendChild(cb);
+    checksDiv.appendChild(wrapper);
   });
 
   const span = document.createElement('span');
@@ -1298,42 +1192,38 @@ function createItemElement(listType, hikerId, item, isOwnList) {
     span.appendChild(sub);
   }
 
-  li.appendChild(cb);
+  const actions = document.createElement('div');
+  actions.className = 'item-actions';
+
+  const editBtn = document.createElement('button');
+  editBtn.className = 'btn-icon';
+  editBtn.title = 'Edit';
+  editBtn.textContent = '✏️';
+  editBtn.addEventListener('click', () => {
+    showEditForm(listType, item, li);
+  });
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'btn-icon delete';
+  deleteBtn.title = 'Delete';
+  deleteBtn.textContent = '🗑️';
+  deleteBtn.addEventListener('click', () => {
+    if (confirm(`Delete "${item.text}"?`)) {
+      deleteItem(listType, item.id);
+      showToast('Item deleted');
+    }
+  });
+
+  actions.appendChild(editBtn);
+  actions.appendChild(deleteBtn);
+
+  li.appendChild(checksDiv);
   li.appendChild(span);
-
-  // Only show edit/delete on your own list
-  if (isOwnList) {
-    const actions = document.createElement('div');
-    actions.className = 'item-actions';
-
-    const editBtn = document.createElement('button');
-    editBtn.className = 'btn-icon';
-    editBtn.title = 'Edit';
-    editBtn.textContent = '✏️';
-    editBtn.addEventListener('click', () => {
-      showEditForm(listType, hikerId, item, li);
-    });
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'btn-icon delete';
-    deleteBtn.title = 'Delete';
-    deleteBtn.textContent = '🗑️';
-    deleteBtn.addEventListener('click', () => {
-      if (confirm(`Delete "${item.text}"?`)) {
-        deleteItem(listType, hikerId, item.id);
-        showToast('Item deleted');
-      }
-    });
-
-    actions.appendChild(editBtn);
-    actions.appendChild(deleteBtn);
-    li.appendChild(actions);
-  }
-
+  li.appendChild(actions);
   return li;
 }
 
-function showAddForm(listType, hikerId, category, ul, addBtn) {
+function showAddForm(listType, category, ul, addBtn) {
   if (addBtn.dataset.formOpen === 'true') return;
   addBtn.dataset.formOpen = 'true';
 
@@ -1357,7 +1247,7 @@ function showAddForm(listType, hikerId, category, ul, addBtn) {
     const subLabel = li.querySelector('.add-sub').value.trim();
     li.remove();
     addBtn.dataset.formOpen = 'false';
-    await addItem(listType, hikerId, category, text, subLabel);
+    await addItem(listType, category, text, subLabel);
     showToast('Item added');
   };
 
@@ -1369,8 +1259,7 @@ function showAddForm(listType, hikerId, category, ul, addBtn) {
   li.querySelector('.add-sub').addEventListener('keydown', e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') cancel(); });
 }
 
-function showEditForm(listType, hikerId, item, li) {
-  const originalHTML = li.innerHTML;
+function showEditForm(listType, item, li) {
   li.innerHTML = `
     <div class="inline-form">
       <input type="text" class="edit-text" value="${escapeAttr(item.text)}">
@@ -1388,13 +1277,13 @@ function showEditForm(listType, hikerId, item, li) {
     const text = li.querySelector('.edit-text').value.trim();
     if (!text) { li.querySelector('.edit-text').focus(); return; }
     const subLabel = li.querySelector('.edit-sub').value.trim();
-    await updateItem(listType, hikerId, item.id, { text, subLabel });
+    await updateItem(listType, item.id, { text, subLabel });
     showToast('Item updated');
   };
 
   const cancel = () => {
     const parent = li.parentNode;
-    const newLi = createItemElement(listType, hikerId, item, true);
+    const newLi = createItemElement(listType, item);
     parent.replaceChild(newLi, li);
   };
 
@@ -1404,63 +1293,48 @@ function showEditForm(listType, hikerId, item, li) {
   li.querySelector('.edit-sub').addEventListener('keydown', e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') cancel(); });
 }
 
-function escapeAttr(str) {
-  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
 // ============================================================
-//  PROGRESS BARS
+//  PROGRESS BARS — per-hiker breakdown
 // ============================================================
 function updateProgress(listType, items) {
-  const total = items.length;
-  const checked = items.filter(i => i.checked).length;
+  const total = items.length * HIKERS.length;
+  let checked = 0;
+  items.forEach(item => {
+    const c = item.checked || {};
+    HIKERS.forEach(h => { if (c[h.id]) checked++; });
+  });
   const pct = total ? (checked / total * 100) : 0;
+  const label = HIKERS.map(h => {
+    const hChecked = items.filter(i => (i.checked || {})[h.id]).length;
+    return `${h.emoji} ${hChecked}/${items.length}`;
+  }).join('  ·  ');
 
   if (listType === 'packing') {
     document.getElementById('pack-progress').style.width = pct + '%';
-    document.getElementById('pack-progress-text').textContent = `${checked} / ${total} items packed`;
+    document.getElementById('pack-progress-text').textContent = label;
   } else {
     document.getElementById('shop-progress').style.width = pct + '%';
-    document.getElementById('shop-progress-text').textContent = `${checked} / ${total} items bought`;
+    document.getElementById('shop-progress-text').textContent = label;
   }
 }
 
 // ============================================================
-//  REAL-TIME LISTENERS (all hikers, both lists)
+//  REAL-TIME LISTENERS
 // ============================================================
-function listenToAllHikers() {
-  HIKERS.forEach(hiker => {
-    // Packing
-    const packUnsub = getCollection('packing', hiker.id).orderBy('order').onSnapshot(snapshot => {
-      const items = [];
-      snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-      packingItems[hiker.id] = items;
-      // Re-render if we're viewing this hiker's packing
-      if (viewingHiker && viewingHiker.id === hiker.id) {
-        const container = document.getElementById('packing-lists');
-        const activeSection = document.getElementById('packing');
-        if (activeSection.classList.contains('active')) {
-          renderList('packing', PACKING_CATEGORIES, items, container);
-        }
-      }
-    }, err => console.error(`Packing listener error (${hiker.id}):`, err));
-    packingUnsubs.push(packUnsub);
+function listenToLists() {
+  getCollection('packing').orderBy('order').onSnapshot(snapshot => {
+    const items = [];
+    snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+    packingItems = items;
+    renderList('packing', PACKING_CATEGORIES, items, document.getElementById('packing-lists'));
+  }, err => console.error('Packing listener error:', err));
 
-    // Shopping
-    const shopUnsub = getCollection('shopping', hiker.id).orderBy('order').onSnapshot(snapshot => {
-      const items = [];
-      snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-      shoppingItems[hiker.id] = items;
-      if (viewingHiker && viewingHiker.id === hiker.id) {
-        const container = document.getElementById('shopping-lists');
-        const activeSection = document.getElementById('shopping');
-        if (activeSection.classList.contains('active')) {
-          renderList('shopping', SHOPPING_CATEGORIES, items, container);
-        }
-      }
-    }, err => console.error(`Shopping listener error (${hiker.id}):`, err));
-    shoppingUnsubs.push(shopUnsub);
-  });
+  getCollection('shopping').orderBy('order').onSnapshot(snapshot => {
+    const items = [];
+    snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+    shoppingItems = items;
+    renderList('shopping', SHOPPING_CATEGORIES, items, document.getElementById('shopping-lists'));
+  }, err => console.error('Shopping listener error:', err));
 }
 
 // ============================================================
@@ -1475,9 +1349,6 @@ function initNav() {
     const tab = e.target.dataset.tab;
     nav.querySelectorAll('a').forEach(a => a.classList.toggle('active', a.dataset.tab === tab));
     sections.forEach(s => s.classList.toggle('active', s.id === tab));
-    // Re-render the list when switching to packing/shopping tabs
-    if (tab === 'packing') renderCurrentView('packing');
-    if (tab === 'shopping') renderCurrentView('shopping');
     window.scrollTo(0, 0);
   });
 }
@@ -1508,37 +1379,15 @@ async function main() {
   // Password gate
   await checkPassword();
 
-  // Pick hiker
-  currentHiker = await pickHiker();
-  viewingHiker = currentHiker;
-
   // Init Firebase
   await initFirebase();
 
-  // Seed data for all hikers
-  for (const hiker of HIKERS) {
-    await seedIfEmpty('packing', hiker.id, PACKING_SEED);
-    await seedIfEmpty('shopping', hiker.id, SHOPPING_SEED);
-  }
+  // Seed data (shared lists)
+  await seedIfEmpty('packing', PACKING_SEED);
+  await seedIfEmpty('shopping', SHOPPING_SEED);
 
-  // Render hiker pills
-  renderHikerPills('packing-hiker-pills', 'packing');
-  renderHikerPills('shopping-hiker-pills', 'shopping');
-
-  // Start real-time listeners for all hikers
-  listenToAllHikers();
-
-  // Show switch-hiker button
-  const switchBtn = document.getElementById('switch-hiker-btn');
-  switchBtn.textContent = `${currentHiker.emoji} ${currentHiker.name} ▾`;
-  switchBtn.classList.remove('hidden');
-
-  showToast(`Welcome, ${currentHiker.name}!`);
-}
-
-function switchHiker() {
-  localStorage.removeItem('cederberg_hiker');
-  location.reload();
+  // Start real-time listeners
+  listenToLists();
 }
 
 main().catch(err => {
