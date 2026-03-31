@@ -33,6 +33,17 @@
   }
   header h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
   header p { opacity: 0.85; font-size: 0.95rem; }
+  .switch-hiker-btn {
+    margin-top: 0.6rem;
+    background: rgba(255,255,255,0.18);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.35);
+    padding: 0.3rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .switch-hiker-btn:hover { background: rgba(255,255,255,0.3); }
   nav {
     position: sticky;
     top: 0;
@@ -388,6 +399,82 @@
   .btn-sm.secondary { background: #e9ecef; color: var(--text); }
   .btn-sm.secondary:hover { background: #dee2e6; }
 
+  /* ===== Hiker Picker ===== */
+  .hiker-picker-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .hiker-picker-overlay.hidden { display: none; }
+  .hiker-picker-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .hiker-picker-card h2 { color: var(--accent); margin-bottom: 0.5rem; justify-content: center; }
+  .hiker-picker-card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem; }
+  .hiker-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .hiker-buttons button {
+    padding: 0.85rem;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .hiker-buttons button:hover {
+    border-color: var(--accent);
+    background: #f0fdf4;
+    color: var(--accent);
+  }
+
+  /* ===== Hiker Pills ===== */
+  .hiker-pills {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .hiker-pill {
+    padding: 0.4rem 0.9rem;
+    border-radius: 99px;
+    border: 2px solid var(--border);
+    background: var(--card);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--muted);
+  }
+  .hiker-pill:hover {
+    border-color: var(--accent-light);
+    color: var(--accent);
+  }
+  .hiker-pill.active {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: white;
+  }
+
   /* ===== Toast ===== */
   .toast-container {
     position: fixed;
@@ -489,12 +576,22 @@
   </div>
 </div>
 
+<!-- ===== Hiker Picker Overlay ===== -->
+<div class="hiker-picker-overlay hidden" id="hiker-picker-overlay">
+  <div class="hiker-picker-card">
+    <h2>👋 Who's packing?</h2>
+    <p>Choose your name — you can always view other hikers' lists too</p>
+    <div class="hiker-buttons" id="hiker-buttons"></div>
+  </div>
+</div>
+
 <!-- ===== Offline banner ===== -->
 <div class="offline-banner" id="offline-banner">📴 Offline — changes will sync when you're back online</div>
 
 <header>
   <h1>🏔️ Cederberg Easter 2026</h1>
   <p>4-Day Unsupported Hike · 2–7 April</p>
+  <button id="switch-hiker-btn" class="switch-hiker-btn hidden" onclick="switchHiker()">Switch hiker</button>
 </header>
 
 <nav id="nav">
@@ -712,6 +809,7 @@
 
   <!-- ===================== PACKING (dynamic) ===================== -->
   <div class="section" id="packing">
+    <div class="hiker-pills" id="packing-hiker-pills"></div>
     <div class="card">
       <h2>📊 Packing Progress</h2>
       <div class="progress-bar"><div class="fill" id="pack-progress" style="width:0%"></div></div>
@@ -722,6 +820,7 @@
 
   <!-- ===================== SHOPPING (dynamic) ===================== -->
   <div class="section" id="shopping">
+    <div class="hiker-pills" id="shopping-hiker-pills"></div>
     <div class="card">
       <h2>📊 Shopping Progress</h2>
       <div class="progress-bar"><div class="fill" id="shop-progress" style="width:0%"></div></div>
@@ -781,7 +880,7 @@
 
 <script>
 // ============================================================
-//  CONFIGURATION — Fill in your Firebase project details
+//  CONFIGURATION
 // ============================================================
 const FIREBASE_CONFIG = {
   apiKey:            "AIzaSyBLYetNSnNg8eXeT0v1k404CZqblZngoN8",
@@ -792,11 +891,16 @@ const FIREBASE_CONFIG = {
   appId:             "1:879421116813:web:7830982bb197478ec1edc4"
 };
 
-// SHA-256 hash of the trip password.
-// Default is "cederberg2026". To change, run in browser console:
-//   hashPassword("your-new-password").then(console.log)
-// and paste the result here.
 const PASSWORD_HASH = "3ffe186895c8b41eaa52aaece2b9f5f283e97c77198d36a6ab7c99390cd195a7";
+
+// ============================================================
+//  HIKERS
+// ============================================================
+const HIKERS = [
+  { id: 'val', name: 'Val',   emoji: '💜' },
+  { id: 'dom', name: 'Dom',   emoji: '🧡' },
+  { id: 'pj',  name: 'Pierre', emoji: '💙' },
+];
 
 // ============================================================
 //  CATEGORY DEFINITIONS
@@ -820,16 +924,14 @@ const SHOPPING_CATEGORIES = [
 ];
 
 // ============================================================
-//  SEED DATA (original items from the static page)
+//  SEED DATA
 // ============================================================
 const PACKING_SEED = [
-  // Backpack & Shelter
   { category: 'backpack', text: '55–65L backpack with rain cover', subLabel: '' },
   { category: 'backpack', text: '3-season tent (1 between 2)', subLabel: 'Share the weight — one carries tent, other carries poles+fly' },
   { category: 'backpack', text: 'Groundsheet / footprint', subLabel: '' },
   { category: 'backpack', text: 'Sleeping bag (comfort 0°C or below)', subLabel: 'April nights at altitude = cold' },
   { category: 'backpack', text: 'Sleeping pad (inflatable or foam)', subLabel: '' },
-  // Clothing
   { category: 'clothing', text: 'Moisture-wicking base layer tops ×2', subLabel: '' },
   { category: 'clothing', text: 'Long-sleeve hiking shirt (sun protection)', subLabel: '' },
   { category: 'clothing', text: 'Hiking shorts', subLabel: '' },
@@ -848,27 +950,23 @@ const PACKING_SEED = [
   { category: 'clothing', text: 'Lightweight gloves', subLabel: '' },
   { category: 'clothing', text: 'Sleep thermals — top + bottom', subLabel: '' },
   { category: 'clothing', text: 'Poncho', subLabel: 'Quick rain cover for you + pack' },
-  // Cooking
   { category: 'cooking', text: 'Lightweight stove (Jetboil / pocket rocket)', subLabel: 'No open fires in the Cederberg — ever' },
   { category: 'cooking', text: '230g gas canister', subLabel: 'Buy in CPT — can\'t fly with it from JNB' },
   { category: 'cooking', text: 'Pot (~1L)', subLabel: '' },
-  { category: 'cooking', text: 'Spork + mug (×2)', subLabel: '' },
+  { category: 'cooking', text: 'Spork + mug', subLabel: '' },
   { category: 'cooking', text: '2× lighters', subLabel: '' },
   { category: 'cooking', text: 'Coffee + tea', subLabel: 'Sticks / bags — take from home' },
   { category: 'cooking', text: 'Powdered milk', subLabel: '' },
   { category: 'cooking', text: 'Whey powder', subLabel: 'Recovery shakes on trail' },
   { category: 'cooking', text: 'Smoothie shaker bottle', subLabel: '' },
-  // Water
-  { category: 'water', text: 'Water bottles / bladder — min 4L carry capacity each', subLabel: 'Late summer = unreliable water. Fill up at every source.' },
+  { category: 'water', text: 'Water bottles / bladder — min 4L carry capacity', subLabel: 'Late summer = unreliable water. Fill up at every source.' },
   { category: 'water', text: 'Water purification (Sawyer filter or tablets)', subLabel: '' },
-  // Navigation & Electronics
   { category: 'navigation', text: '1:50,000 Cederberg topo map', subLabel: '' },
   { category: 'navigation', text: 'Compass', subLabel: '' },
   { category: 'navigation', text: 'Phone with AllTrails routes downloaded offline', subLabel: '' },
   { category: 'navigation', text: 'Power bank (10,000 mAh+)', subLabel: '' },
   { category: 'navigation', text: 'Charging cable', subLabel: '' },
   { category: 'navigation', text: 'Headlamp + spare batteries', subLabel: '' },
-  // Safety & First Aid
   { category: 'safety', text: 'Blister plasters (Compeed)', subLabel: '' },
   { category: 'safety', text: 'Crepe bandage', subLabel: '' },
   { category: 'safety', text: 'Antiseptic wipes', subLabel: '' },
@@ -882,7 +980,6 @@ const PACKING_SEED = [
   { category: 'safety', text: 'Lip balm with SPF', subLabel: '' },
   { category: 'safety', text: 'Insect repellent', subLabel: 'Tick country' },
   { category: 'safety', text: 'Anti-chafe cream', subLabel: 'Thighs, feet, pack straps' },
-  // Hygiene
   { category: 'hygiene', text: 'Biodegradable soap (small)', subLabel: '' },
   { category: 'hygiene', text: 'Trowel (cat holes — no facilities)', subLabel: '' },
   { category: 'hygiene', text: 'Toilet paper + ziplock (pack out used TP)', subLabel: '' },
@@ -892,7 +989,6 @@ const PACKING_SEED = [
   { category: 'hygiene', text: 'Toothbrush + toothpaste', subLabel: '' },
   { category: 'hygiene', text: 'Hair brush / comb', subLabel: '' },
   { category: 'hygiene', text: 'Microfibre towel', subLabel: 'Doubles as Crystal Pools towel' },
-  // Extras
   { category: 'extras', text: 'Trekking poles', subLabel: 'Day 1 climb + Day 4 descent = essential' },
   { category: 'extras', text: 'Sunglasses', subLabel: '' },
   { category: 'extras', text: 'Dry bags / ziplock bags', subLabel: 'For electronics, sleeping bag, clothes' },
@@ -903,7 +999,6 @@ const PACKING_SEED = [
 ];
 
 const SHOPPING_SEED = [
-  // Hungry Hiker (pre-checked)
   { category: 'hungry-hiker', text: 'Beef Mexican Taco Bowl ×2', subLabel: 'Day 1 (Fri) dinner', checked: true },
   { category: 'hungry-hiker', text: 'Chicken Thai Green Curry ×2', subLabel: 'Day 2 (Sat) dinner', checked: true },
   { category: 'hungry-hiker', text: 'Spaghetti Bolognese ×2', subLabel: 'Day 3 (Sun) dinner', checked: true },
@@ -912,7 +1007,6 @@ const SHOPPING_SEED = [
   { category: 'hungry-hiker', text: 'Italian Balsamic Trail Mix (45g) ×2', subLabel: '', checked: true },
   { category: 'hungry-hiker', text: 'Sweet Chilli Trail Mix (45g) ×2', subLabel: '', checked: true },
   { category: 'hungry-hiker', text: 'Salt & Vinegar Trail Mix (45g) ×2', subLabel: '', checked: true },
-  // Groceries
   { category: 'groceries', text: 'Instant oats sachets ×8', subLabel: 'Breakfasts Day 1 & 2' },
   { category: 'groceries', text: 'Powdered milk sachets ×16', subLabel: 'Oats + coffee/tea' },
   { category: 'groceries', text: 'Instant coffee sticks / tea bags ×16', subLabel: '' },
@@ -929,13 +1023,11 @@ const SHOPPING_SEED = [
   { category: 'groceries', text: 'Energy bars ×8 (Jungle Oat etc.)', subLabel: '' },
   { category: 'groceries', text: 'Dried fruit — mango & apricots (1 bag each)', subLabel: '' },
   { category: 'groceries', text: 'Salt & pepper sachets', subLabel: '' },
-  // Gear
   { category: 'gear', text: '230g gas canister', subLabel: 'Cannot fly with this — must buy in CPT' },
   { category: 'gear', text: 'Water bladder for PJ', subLabel: '' },
   { category: 'gear', text: 'Groundsheet', subLabel: '' },
   { category: 'gear', text: 'Water repellent spray / treatment', subLabel: 'For jacket, boots, or pack' },
   { category: 'gear', text: 'Poncho', subLabel: '' },
-  // Bookings & Admin
   { category: 'bookings', text: 'CapeNature wilderness permit', subLabel: 'Sorted by Kommetjie host — legend!', checked: true },
   { category: 'bookings', text: 'Flights booked', subLabel: 'JNB→CPT · CPT→JNB', checked: true },
   { category: 'bookings', text: 'Confirm with Kommetjie crew re: carpool & staying over Mon night + Tue morning', subLabel: '' },
@@ -962,16 +1054,16 @@ function showToast(message) {
   setTimeout(() => toast.remove(), 3000);
 }
 
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-}
-
 // ============================================================
 //  APP STATE
 // ============================================================
 let db = null;
-let packingItems = [];  // live array from Firestore
-let shoppingItems = [];
+let currentHiker = null;       // { id, name, emoji }
+let viewingHiker = null;       // which hiker's list we're looking at
+let packingItems = {};         // { hikerId: [...items] }
+let shoppingItems = {};
+let packingUnsubs = [];        // Firestore unsubscribe functions
+let shoppingUnsubs = [];
 
 // ============================================================
 //  FIREBASE INIT & AUTH
@@ -983,13 +1075,11 @@ function isFirebaseConfigured() {
 async function initFirebase() {
   firebase.initializeApp(FIREBASE_CONFIG);
   db = firebase.firestore();
-  // Enable offline persistence — crucial for the trail!
   try {
     await db.enablePersistence({ synchronizeTabs: true });
   } catch (err) {
     console.warn('Offline persistence unavailable:', err.code);
   }
-  // Sign in anonymously
   await firebase.auth().signInAnonymously();
 }
 
@@ -998,7 +1088,6 @@ async function initFirebase() {
 // ============================================================
 async function checkPassword() {
   return new Promise((resolve) => {
-    // Check sessionStorage first
     if (sessionStorage.getItem('cederberg_auth') === 'true') {
       document.getElementById('password-overlay').classList.add('hidden');
       resolve();
@@ -1026,17 +1115,49 @@ async function checkPassword() {
 }
 
 // ============================================================
-//  FIRESTORE CRUD
+//  HIKER PICKER
 // ============================================================
-function getCollection(listId) {
-  return db.collection('lists').doc(listId).collection('items');
+function pickHiker() {
+  return new Promise((resolve) => {
+    // Check localStorage for remembered hiker
+    const saved = localStorage.getItem('cederberg_hiker');
+    if (saved) {
+      const hiker = HIKERS.find(h => h.id === saved);
+      if (hiker) {
+        resolve(hiker);
+        return;
+      }
+    }
+
+    const overlay = document.getElementById('hiker-picker-overlay');
+    const btnContainer = document.getElementById('hiker-buttons');
+    overlay.classList.remove('hidden');
+
+    HIKERS.forEach(hiker => {
+      const btn = document.createElement('button');
+      btn.innerHTML = `${hiker.emoji} ${hiker.name}`;
+      btn.addEventListener('click', () => {
+        localStorage.setItem('cederberg_hiker', hiker.id);
+        overlay.classList.add('hidden');
+        resolve(hiker);
+      });
+      btnContainer.appendChild(btn);
+    });
+  });
 }
 
-async function addItem(listId, category, text, subLabel = '') {
-  const items = listId === 'packing' ? packingItems : shoppingItems;
+// ============================================================
+//  FIRESTORE CRUD (per-hiker)
+// ============================================================
+function getCollection(listType, hikerId) {
+  return db.collection('hikers').doc(hikerId).collection(listType);
+}
+
+async function addItem(listType, hikerId, category, text, subLabel = '') {
+  const items = (listType === 'packing' ? packingItems : shoppingItems)[hikerId] || [];
   const catItems = items.filter(i => i.category === category);
   const maxOrder = catItems.length > 0 ? Math.max(...catItems.map(i => i.order)) : -1;
-  await getCollection(listId).add({
+  await getCollection(listType, hikerId).add({
     text,
     subLabel: subLabel || '',
     category,
@@ -1046,28 +1167,28 @@ async function addItem(listId, category, text, subLabel = '') {
   });
 }
 
-async function updateItem(listId, itemId, updates) {
-  await getCollection(listId).doc(itemId).update(updates);
+async function updateItem(listType, hikerId, itemId, updates) {
+  await getCollection(listType, hikerId).doc(itemId).update(updates);
 }
 
-async function deleteItem(listId, itemId) {
-  await getCollection(listId).doc(itemId).delete();
+async function deleteItem(listType, hikerId, itemId) {
+  await getCollection(listType, hikerId).doc(itemId).delete();
 }
 
-async function toggleItem(listId, itemId, checked) {
-  await getCollection(listId).doc(itemId).update({ checked });
+async function toggleItem(listType, hikerId, itemId, checked) {
+  await getCollection(listType, hikerId).doc(itemId).update({ checked });
 }
 
 // ============================================================
-//  SEED DATA (runs once when Firestore is empty)
+//  SEED DATA (per-hiker, runs once per hiker)
 // ============================================================
-async function seedIfEmpty(listId, seedData) {
-  const snapshot = await getCollection(listId).limit(1).get();
-  if (!snapshot.empty) return; // already seeded
+async function seedIfEmpty(listType, hikerId, seedData) {
+  const snapshot = await getCollection(listType, hikerId).limit(1).get();
+  if (!snapshot.empty) return;
 
   const batch = db.batch();
   seedData.forEach((item, index) => {
-    const ref = getCollection(listId).doc();
+    const ref = getCollection(listType, hikerId).doc();
     batch.set(ref, {
       text: item.text,
       subLabel: item.subLabel || '',
@@ -1078,14 +1199,46 @@ async function seedIfEmpty(listId, seedData) {
     });
   });
   await batch.commit();
-  showToast(`${listId} list loaded with ${seedData.length} items`);
+}
+
+// ============================================================
+//  HIKER PILLS (tab-like selectors for viewing different hikers)
+// ============================================================
+function renderHikerPills(containerId, listType) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  HIKERS.forEach(hiker => {
+    const pill = document.createElement('button');
+    pill.className = 'hiker-pill' + (hiker.id === viewingHiker.id ? ' active' : '');
+    pill.textContent = `${hiker.emoji} ${hiker.name}`;
+    pill.addEventListener('click', () => {
+      viewingHiker = hiker;
+      // Update all pills
+      renderHikerPills('packing-hiker-pills', 'packing');
+      renderHikerPills('shopping-hiker-pills', 'shopping');
+      // Re-render the active list
+      renderCurrentView(listType);
+    });
+    container.appendChild(pill);
+  });
+}
+
+function renderCurrentView(listType) {
+  if (listType === 'packing') {
+    const items = packingItems[viewingHiker.id] || [];
+    renderList('packing', PACKING_CATEGORIES, items, document.getElementById('packing-lists'));
+  } else {
+    const items = shoppingItems[viewingHiker.id] || [];
+    renderList('shopping', SHOPPING_CATEGORIES, items, document.getElementById('shopping-lists'));
+  }
 }
 
 // ============================================================
 //  RENDERING
 // ============================================================
-function renderList(listId, categories, items, container) {
+function renderList(listType, categories, items, container) {
   container.innerHTML = '';
+  const isOwnList = viewingHiker.id === currentHiker.id;
 
   categories.forEach(cat => {
     const catItems = items
@@ -1100,36 +1253,39 @@ function renderList(listId, categories, items, container) {
     ul.className = 'checklist';
 
     catItems.forEach(item => {
-      const li = createItemElement(listId, item);
+      const li = createItemElement(listType, viewingHiker.id, item, isOwnList);
       ul.appendChild(li);
     });
 
     card.appendChild(ul);
 
-    // Add item button
-    const addBtn = document.createElement('button');
-    addBtn.className = 'add-item-btn';
-    addBtn.innerHTML = '+ Add item';
-    addBtn.addEventListener('click', () => {
-      showAddForm(listId, cat.id, ul, addBtn);
-    });
-    card.appendChild(addBtn);
+    // Only show add button on your own list
+    if (isOwnList) {
+      const addBtn = document.createElement('button');
+      addBtn.className = 'add-item-btn';
+      addBtn.innerHTML = '+ Add item';
+      addBtn.addEventListener('click', () => {
+        showAddForm(listType, viewingHiker.id, cat.id, ul, addBtn);
+      });
+      card.appendChild(addBtn);
+    }
 
     container.appendChild(card);
   });
 
-  updateProgress(listId, items);
+  updateProgress(listType, items);
 }
 
-function createItemElement(listId, item) {
+function createItemElement(listType, hikerId, item, isOwnList) {
   const li = document.createElement('li');
   if (item.checked) li.classList.add('checked');
 
   const cb = document.createElement('input');
   cb.type = 'checkbox';
   cb.checked = item.checked;
+  if (!isOwnList) cb.disabled = true;
   cb.addEventListener('change', () => {
-    toggleItem(listId, item.id, cb.checked);
+    if (isOwnList) toggleItem(listType, hikerId, item.id, cb.checked);
   });
 
   const span = document.createElement('span');
@@ -1142,39 +1298,42 @@ function createItemElement(listId, item) {
     span.appendChild(sub);
   }
 
-  const actions = document.createElement('div');
-  actions.className = 'item-actions';
-
-  const editBtn = document.createElement('button');
-  editBtn.className = 'btn-icon';
-  editBtn.title = 'Edit';
-  editBtn.textContent = '✏️';
-  editBtn.addEventListener('click', () => {
-    showEditForm(listId, item, li);
-  });
-
-  const deleteBtn = document.createElement('button');
-  deleteBtn.className = 'btn-icon delete';
-  deleteBtn.title = 'Delete';
-  deleteBtn.textContent = '🗑️';
-  deleteBtn.addEventListener('click', () => {
-    if (confirm(`Delete "${item.text}"?`)) {
-      deleteItem(listId, item.id);
-      showToast('Item deleted');
-    }
-  });
-
-  actions.appendChild(editBtn);
-  actions.appendChild(deleteBtn);
-
   li.appendChild(cb);
   li.appendChild(span);
-  li.appendChild(actions);
+
+  // Only show edit/delete on your own list
+  if (isOwnList) {
+    const actions = document.createElement('div');
+    actions.className = 'item-actions';
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'btn-icon';
+    editBtn.title = 'Edit';
+    editBtn.textContent = '✏️';
+    editBtn.addEventListener('click', () => {
+      showEditForm(listType, hikerId, item, li);
+    });
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn-icon delete';
+    deleteBtn.title = 'Delete';
+    deleteBtn.textContent = '🗑️';
+    deleteBtn.addEventListener('click', () => {
+      if (confirm(`Delete "${item.text}"?`)) {
+        deleteItem(listType, hikerId, item.id);
+        showToast('Item deleted');
+      }
+    });
+
+    actions.appendChild(editBtn);
+    actions.appendChild(deleteBtn);
+    li.appendChild(actions);
+  }
+
   return li;
 }
 
-function showAddForm(listId, category, ul, addBtn) {
-  // Don't show multiple forms
+function showAddForm(listType, hikerId, category, ul, addBtn) {
   if (addBtn.dataset.formOpen === 'true') return;
   addBtn.dataset.formOpen = 'true';
 
@@ -1198,28 +1357,19 @@ function showAddForm(listId, category, ul, addBtn) {
     const subLabel = li.querySelector('.add-sub').value.trim();
     li.remove();
     addBtn.dataset.formOpen = 'false';
-    await addItem(listId, category, text, subLabel);
+    await addItem(listType, hikerId, category, text, subLabel);
     showToast('Item added');
   };
 
-  const cancel = () => {
-    li.remove();
-    addBtn.dataset.formOpen = 'false';
-  };
+  const cancel = () => { li.remove(); addBtn.dataset.formOpen = 'false'; };
 
   li.querySelector('.save-btn').addEventListener('click', save);
   li.querySelector('.cancel-btn').addEventListener('click', cancel);
-  li.querySelector('.add-text').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') save();
-    if (e.key === 'Escape') cancel();
-  });
-  li.querySelector('.add-sub').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') save();
-    if (e.key === 'Escape') cancel();
-  });
+  li.querySelector('.add-text').addEventListener('keydown', e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') cancel(); });
+  li.querySelector('.add-sub').addEventListener('keydown', e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') cancel(); });
 }
 
-function showEditForm(listId, item, li) {
+function showEditForm(listType, hikerId, item, li) {
   const originalHTML = li.innerHTML;
   li.innerHTML = `
     <div class="inline-form">
@@ -1238,29 +1388,20 @@ function showEditForm(listId, item, li) {
     const text = li.querySelector('.edit-text').value.trim();
     if (!text) { li.querySelector('.edit-text').focus(); return; }
     const subLabel = li.querySelector('.edit-sub').value.trim();
-    await updateItem(listId, item.id, { text, subLabel });
+    await updateItem(listType, hikerId, item.id, { text, subLabel });
     showToast('Item updated');
   };
 
   const cancel = () => {
-    // Re-render will handle it via the snapshot listener
-    li.innerHTML = originalHTML;
-    // Re-create the proper element
     const parent = li.parentNode;
-    const newLi = createItemElement(listId, item);
+    const newLi = createItemElement(listType, hikerId, item, true);
     parent.replaceChild(newLi, li);
   };
 
   li.querySelector('.save-btn').addEventListener('click', save);
   li.querySelector('.cancel-btn').addEventListener('click', cancel);
-  li.querySelector('.edit-text').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') save();
-    if (e.key === 'Escape') cancel();
-  });
-  li.querySelector('.edit-sub').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') save();
-    if (e.key === 'Escape') cancel();
-  });
+  li.querySelector('.edit-text').addEventListener('keydown', e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') cancel(); });
+  li.querySelector('.edit-sub').addEventListener('keydown', e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') cancel(); });
 }
 
 function escapeAttr(str) {
@@ -1270,12 +1411,12 @@ function escapeAttr(str) {
 // ============================================================
 //  PROGRESS BARS
 // ============================================================
-function updateProgress(listId, items) {
+function updateProgress(listType, items) {
   const total = items.length;
   const checked = items.filter(i => i.checked).length;
   const pct = total ? (checked / total * 100) : 0;
 
-  if (listId === 'packing') {
+  if (listType === 'packing') {
     document.getElementById('pack-progress').style.width = pct + '%';
     document.getElementById('pack-progress-text').textContent = `${checked} / ${total} items packed`;
   } else {
@@ -1285,21 +1426,40 @@ function updateProgress(listId, items) {
 }
 
 // ============================================================
-//  REAL-TIME LISTENERS
+//  REAL-TIME LISTENERS (all hikers, both lists)
 // ============================================================
-function listenToList(listId, categories, containerId) {
-  const container = document.getElementById(containerId);
-  getCollection(listId).orderBy('order').onSnapshot((snapshot) => {
-    const items = [];
-    snapshot.forEach(doc => {
-      items.push({ id: doc.id, ...doc.data() });
-    });
-    if (listId === 'packing') packingItems = items;
-    else shoppingItems = items;
-    renderList(listId, categories, items, container);
-  }, (error) => {
-    console.error(`Error listening to ${listId}:`, error);
-    container.innerHTML = '<p style="color:var(--danger); padding:1rem;">Error loading list. Check console.</p>';
+function listenToAllHikers() {
+  HIKERS.forEach(hiker => {
+    // Packing
+    const packUnsub = getCollection('packing', hiker.id).orderBy('order').onSnapshot(snapshot => {
+      const items = [];
+      snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+      packingItems[hiker.id] = items;
+      // Re-render if we're viewing this hiker's packing
+      if (viewingHiker && viewingHiker.id === hiker.id) {
+        const container = document.getElementById('packing-lists');
+        const activeSection = document.getElementById('packing');
+        if (activeSection.classList.contains('active')) {
+          renderList('packing', PACKING_CATEGORIES, items, container);
+        }
+      }
+    }, err => console.error(`Packing listener error (${hiker.id}):`, err));
+    packingUnsubs.push(packUnsub);
+
+    // Shopping
+    const shopUnsub = getCollection('shopping', hiker.id).orderBy('order').onSnapshot(snapshot => {
+      const items = [];
+      snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+      shoppingItems[hiker.id] = items;
+      if (viewingHiker && viewingHiker.id === hiker.id) {
+        const container = document.getElementById('shopping-lists');
+        const activeSection = document.getElementById('shopping');
+        if (activeSection.classList.contains('active')) {
+          renderList('shopping', SHOPPING_CATEGORIES, items, container);
+        }
+      }
+    }, err => console.error(`Shopping listener error (${hiker.id}):`, err));
+    shoppingUnsubs.push(shopUnsub);
   });
 }
 
@@ -1315,6 +1475,9 @@ function initNav() {
     const tab = e.target.dataset.tab;
     nav.querySelectorAll('a').forEach(a => a.classList.toggle('active', a.dataset.tab === tab));
     sections.forEach(s => s.classList.toggle('active', s.id === tab));
+    // Re-render the list when switching to packing/shopping tabs
+    if (tab === 'packing') renderCurrentView('packing');
+    if (tab === 'shopping') renderCurrentView('shopping');
     window.scrollTo(0, 0);
   });
 }
@@ -1337,26 +1500,45 @@ async function main() {
   initNav();
   initOfflineDetection();
 
-  // Check if Firebase is configured
   if (!isFirebaseConfigured()) {
     document.getElementById('setup-message').classList.remove('hidden');
-    // Still allow viewing static tabs
     return;
   }
 
   // Password gate
   await checkPassword();
 
+  // Pick hiker
+  currentHiker = await pickHiker();
+  viewingHiker = currentHiker;
+
   // Init Firebase
   await initFirebase();
 
-  // Seed data if first run
-  await seedIfEmpty('packing', PACKING_SEED);
-  await seedIfEmpty('shopping', SHOPPING_SEED);
+  // Seed data for all hikers
+  for (const hiker of HIKERS) {
+    await seedIfEmpty('packing', hiker.id, PACKING_SEED);
+    await seedIfEmpty('shopping', hiker.id, SHOPPING_SEED);
+  }
 
-  // Start real-time listeners
-  listenToList('packing', PACKING_CATEGORIES, 'packing-lists');
-  listenToList('shopping', SHOPPING_CATEGORIES, 'shopping-lists');
+  // Render hiker pills
+  renderHikerPills('packing-hiker-pills', 'packing');
+  renderHikerPills('shopping-hiker-pills', 'shopping');
+
+  // Start real-time listeners for all hikers
+  listenToAllHikers();
+
+  // Show switch-hiker button
+  const switchBtn = document.getElementById('switch-hiker-btn');
+  switchBtn.textContent = `${currentHiker.emoji} ${currentHiker.name} ▾`;
+  switchBtn.classList.remove('hidden');
+
+  showToast(`Welcome, ${currentHiker.name}!`);
+}
+
+function switchHiker() {
+  localStorage.removeItem('cederberg_hiker');
+  location.reload();
 }
 
 main().catch(err => {
